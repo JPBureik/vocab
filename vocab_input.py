@@ -6,6 +6,12 @@ Created on Thu Jan 17 20:26:13 2019
 @author: jp
 """
 
+# Local application imports
+from . import vocable
+
+card = vocable.Vocable()
+#%%
+# Standard library imports
 import pandas as pd
 import terminal_commands as tc
 import datetime
