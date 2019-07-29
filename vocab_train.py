@@ -6,6 +6,8 @@ Created on Thu Jan 17 20:26:13 2019
 @author: jp
 """
 
+""" Need to solve inline graphics for linux terminal"""
+
 import pandas as pd
 import terminal_commands as tc
 import time
