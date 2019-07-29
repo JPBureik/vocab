@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+ #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Thu Jan 17 20:26:13 2019
@@ -14,8 +14,6 @@ import time
 import datetime
 from termcolor import colored
 from tabulate import tabulate
-import radial_bar_chart as rbc
-from matplotlib import pyplot as plt
 
 #%% Ignore performance warning
 
@@ -94,17 +92,12 @@ def vocab_practice(vocab_total, lang, df, df_today):
     correct_counter = 0 # Show progress as correct_counter/vocab_total
     ratio = 0 # Calculate ratio at the end, increase with every correct answer
     foreign = ''
-    fig_ans_close = False
 
-    def correct_answer(fig_bas, foreign, correct_counter, vocab_total, ratio):
-        fig_bas.close()
+    def correct_answer(foreign, correct_counter, vocab_total, ratio):
         tc.del_lines(7)
         correct_counter += 1
         progress_bar(correct_counter,vocab_total)
         print('')
-        chart_data = pd.DataFrame([[df.loc[df['German'] == df_today.iloc[k]['German'], 'Phase'].iloc[0]+1,6]])
-        fig_ans = rbc.create_radial_chart(chart_data, figsize = (0.3,0.3), fontsize = 7, color_theme = 'Blue')
-        plt.show()
         print(df_today.iloc[k]['German'])
         print(colored(foreign, 'green'))
         ratio += 1
@@ -115,24 +108,13 @@ def vocab_practice(vocab_total, lang, df, df_today):
         # Delete lines of previous question
         time.sleep(1)
         tc.del_lines(13)
-        fig_ans_close = True
-        return fig_ans, fig_ans_close, correct_counter, ratio
+        return correct_counter, ratio
 
-    def incorrect_answer(fig_bas, foreign, incorrect_counter, ratio, df_today_corrections, decrease_phase):
+    def incorrect_answer(foreign, incorrect_counter, ratio, df_today_corrections, decrease_phase):
 
         mod_del = False
 
         while foreign != df_today.iloc[k][language_choice[lang]]:
-            # Print phase info graphic
-            fig_bas.close()
-            tc.del_lines(6)
-            print('')
-            if decrease_phase == True and df.loc[df['German'] == df_today.iloc[k]['German'], 'Phase'].iloc[0] > 0:
-                chart_data = pd.DataFrame([[df.loc[df['German'] == df_today.iloc[k]['German'], 'Phase'].iloc[0]-1,6]])
-            else:
-                chart_data = pd.DataFrame([[df.loc[df['German'] == df_today.iloc[k]['German'], 'Phase'].iloc[0],6]])
-            fig_ans = rbc.create_radial_chart(chart_data, figsize = (0.3,0.3), fontsize = 7, color_theme = 'Blue')
-            plt.show()
             # Delete lines from previous mod
             if mod_del == True:
                 tc.del_lines(4)
@@ -166,7 +148,6 @@ def vocab_practice(vocab_total, lang, df, df_today):
                     foreign = df_today.iloc[k][language_choice[lang]]
                     tc.del_lines(15)
                     incorrect_counter = 0
-                    fig_ans_close = True
                 # Correct answer
                 elif select_field == 1:
                     corrected = input('Enter correct answer:\n')
@@ -186,8 +167,7 @@ def vocab_practice(vocab_total, lang, df, df_today):
             tc.del_lines(15)
         incorrect_counter = 0
         df_today_corrections = df_today_corrections.append(df_today.iloc[k])
-        fig_ans_close = True
-        return fig_ans, fig_ans_close, incorrect_counter, ratio, df_today_corrections
+        return incorrect_counter, ratio, df_today_corrections
 
     # Main loop
     while foreign != 'quit':
@@ -211,11 +191,6 @@ def vocab_practice(vocab_total, lang, df, df_today):
 
                 # Verify input
 
-                # Print phase info graphic of item
-                chart_data = pd.DataFrame([[df_today.iloc[k]['Phase'],6]])
-                fig_bas = rbc.create_radial_chart(chart_data, figsize = (0.3,0.3), fontsize = 7, color_theme = 'Blue')
-                plt.show()
-
                 # Question
                 foreign = input(df_today.iloc[k]['German'] + ': \n')
                 tc.del_lines(1)
@@ -227,7 +202,7 @@ def vocab_practice(vocab_total, lang, df, df_today):
                         break
                     else:
                         tc.del_lines(2)
-                        fig_ans, fig_ans_close, incorrect_counter, ratio, df_today_corrections = incorrect_answer(fig_bas, foreign, incorrect_counter, ratio, df_today_corrections, decrease_phase=False)
+                        incorrect_counter, ratio, df_today_corrections = incorrect_answer(foreign, incorrect_counter, ratio, df_today_corrections, decrease_phase=False)
                         continue
 
                 # mod condition: modify answer in df and df_today
@@ -242,14 +217,12 @@ def vocab_practice(vocab_total, lang, df, df_today):
 
                 # Correct answer
                 elif foreign == df_today.iloc[k][language_choice[lang]]:
-                    fig_ans, fig_ans_close, correct_counter, ratio = correct_answer(fig_bas, foreign, correct_counter, vocab_total, ratio)
+                    correct_counter, ratio = correct_answer(foreign, correct_counter, vocab_total, ratio)
 
                 # Incorrect answer
                 else:
-                    fig_ans, fig_ans_close, incorrect_counter, ratio, df_today_corrections = incorrect_answer(fig_bas, foreign, incorrect_counter, ratio, df_today_corrections, decrease_phase=True)
+                    incorrect_counter, ratio, df_today_corrections = incorrect_answer(foreign, incorrect_counter, ratio, df_today_corrections, decrease_phase=True)
 
-                if fig_ans_close == True:
-                    fig_ans.close()
                 # Save vocab file
                 df.to_hdf(vocab_file[lang], key='df', mode='w')
 
@@ -260,15 +233,6 @@ def vocab_practice(vocab_total, lang, df, df_today):
             else:
                 print_table(language_choice, lang, df)
                 progress_bar(correct_counter,vocab_total)
-                ratio = int(ratio/vocab_total*100)
-                sizes = [ratio, 100-ratio]
-                labels = ['Correct', 'Incorrect']
-                colors = ['violet', 'aqua']
-                plt.pie(sizes, labels=labels, colors=colors, autopct='%d', radius = 1, counterclock=False, textprops={'fontsize': 6}, startangle=90)
-                plt.title(str(ratio) + '% correct', fontdict={'size': 6}, pad = -0.75)
-                fig = plt.gcf()
-                fig.set_size_inches(1.40,1)
-                plt.show()
                 break
         break
 
