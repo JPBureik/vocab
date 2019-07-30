@@ -9,7 +9,7 @@ Created on Thu Jan 17 20:26:13 2019
 # Local application imports
 from . import vocable
 
-card = vocable.Vocable()
+card = vocable.Vocable('english', 'Jahr', 'year')
 #%%
 # Standard library imports
 import pandas as pd
