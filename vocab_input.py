@@ -6,17 +6,18 @@ Created on Thu Jan 17 20:26:13 2019
 @author: jp
 """
 
-# Local application imports
-from . import vocable
-
-card = vocable.Vocable('english', 'Jahr', 'year')
-#%%
 # Standard library imports
 import pandas as pd
 import terminal_commands as tc
 import datetime
 from termcolor import colored
 from tabulate import tabulate
+
+
+# Local application imports
+from . import vocable
+
+card = vocable.Vocable('english', 'Jahr', 'year')
 
 #%% Ignore performance warning
 

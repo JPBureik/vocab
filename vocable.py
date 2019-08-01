@@ -12,14 +12,22 @@ class Vocable:
         foreign(str): vocable item in foreign language
     """
     def __init__(self, language, native, foreign):
+        self._language = language
         self.phase = 0
         self.date = date.today()
-        self.language = language
         self.native = native
         self.foreign = foreign
     
     def edit(self):
-        pass
+        ''' Edit any public attribute of vocable class instance.'''
+        select = input('Specify attribute to change:\n')
+        try:
+            print('Current: ' + str(getattr(self, select)))
+            change = input('Edit: ')
+            setattr(self, select, change)
+            print('Changed ' + select + ' to ' + change + '.')
+        except:
+            print('Attribute not found')
     
     def practice(self):
         pass
