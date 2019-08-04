@@ -17,12 +17,7 @@ from tabulate import tabulate
 # Local application imports
 from . import vocable
 
-card = vocable.Vocable('english', 'Jahr', 'year')
-
-#%% Ignore performance warning
-
-import warnings
-warnings.filterwarnings('ignore',category=pd.io.pytables.PerformanceWarning)
+#card = vocable.Vocable('english', 'Jahr', 'year')
 
 #%% Select language
 
@@ -35,6 +30,18 @@ def language_select(language_choice):
     print('You have selected ' + language_choice[lang] + '. Enter <quit> to end. Enter <mod> to edit.')
 
     return lang
+
+#%%
+
+for k in range(100):
+    card = vocable.Vocable('lang', '', '')
+    card.native = input('Type native: ')
+    card.foreign = input('Type foreign: ')
+
+#%% Ignore performance warning
+
+import warnings
+warnings.filterwarnings('ignore',category=pd.io.pytables.PerformanceWarning)
 
 #%% Input new vocab
 
