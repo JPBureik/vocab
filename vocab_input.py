@@ -38,6 +38,12 @@ lang = language_select(language_choice)
 list_of_cards = []
 input_str = ''
 
+''' Loop structure:
+    1- Create function
+    2- Create object
+    3- Map function onto object
+    '''
+
 for k in range(100):
     while input_str != 'quit':
         card = vocable.Vocable('lang', '', '')
@@ -48,7 +54,7 @@ for k in range(100):
             card.foreign = input_str
             list_of_cards.append(card)
 
-#%% Ignore performance warning
+#%% Îgnore performance warning
 
 import warnings
 warnings.filterwarnings('ignore',category=pd.io.pytables.PerformanceWarning)
