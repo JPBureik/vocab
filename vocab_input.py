@@ -29,14 +29,24 @@ def language_select(language_choice):
     tc.del_lines(1)
     print('You have selected ' + language_choice[lang] + '. Enter <quit> to end. Enter <mod> to edit.')
 
-    return lang
+    return language_choice[lang]
 
 #%%
+    
+lang = language_select(language_choice)
+    
+list_of_cards = []
+input_str = ''
 
 for k in range(100):
-    card = vocable.Vocable('lang', '', '')
-    card.native = input('Type native: ')
-    card.foreign = input('Type foreign: ')
+    while input_str != 'quit':
+        card = vocable.Vocable('lang', '', '')
+        input_str = input('Type native: ')
+        if input_str != 'quit':
+            card.native = input_str
+            input_str = input('Type ' + lang + ': ')
+            card.foreign = input_str
+            list_of_cards.append(card)
 
 #%% Ignore performance warning
 
