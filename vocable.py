@@ -46,3 +46,8 @@ class Vocable:
     def foreign(self, input_str):
         self._foreign = input_str
     
+    def train(self):
+        question = input(self.native + '\n')
+        if question == self.foreign:
+            print('correct')
+    

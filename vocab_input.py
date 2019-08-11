@@ -15,9 +15,9 @@ from tabulate import tabulate
 
 
 # Local application imports
-from . import vocable
+import vocable
 
-#card = vocable.Vocable('english', 'Jahr', 'year')
+card = vocable.Vocable('english', 'Jahr', 'year')
 
 #%% Select language
 
