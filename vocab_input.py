@@ -15,9 +15,9 @@ from tabulate import tabulate
 
 
 # Local application imports
-import vocable
+from vocable import Vocable
 
-#card = vocable.Vocable('english', 'Jahr', 'year')
+#this_card = vocable.Vocable('english', 'Jahr', 'year')
 
 #%% Select language
 
@@ -39,16 +39,26 @@ foreign_language = language_select(language_choice)
 # use map
 
 def load_vocab_file(foreign_language):
-    cards = set()
+    set_of_cards = set()
     vocab_file = 'vocab_' + foreign_language[:2].lower() + '.h5'
     df = pd.read_hdf(vocab_file, 'df')
     for k in range(len(df)):
-        card = vocable.Vocable(foreign_language, df.iloc[k]['German'], df.iloc[k][foreign_language])
-        cards.add(card)
+        card = Vocable(foreign_language, df.iloc[k]['German'], df.iloc[k][foreign_language])
+        set_of_cards.add(card)
         
-    return cards
+    return set_of_cards
         
-cards = load_vocab_file(foreign_language)
+set_of_cards = load_vocab_file(foreign_language)
+
+#%%
+
+class VocableSet:
+    def __init__(self):
+        pass
+
+class VocableCard(VocableSet):
+    def __init__(self):
+        super(VocableCard, self).__init__()
 
 #%% Add new vocab items
 
@@ -59,7 +69,7 @@ def add_vocab_item(foreign_language, cards):
     if native != 'quit':
         foreign = input('Type ' + foreign_language + ': \n')
         if foreign != 'quit':
-            card = vocable.Vocable(foreign_language, native, foreign)
+            card = Vocable(foreign_language, native, foreign)
             cards.add(card)
     else:
         foreign = ''
