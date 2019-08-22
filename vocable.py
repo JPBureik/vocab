@@ -11,12 +11,23 @@ class Vocable:
         native(str): vocable item in native language
         foreign(str): vocable item in foreign language
     """
+    num_of_cards = 0
+    
     def __init__(self, language, native, foreign):
         self._language = language
         self._phase = 0
         self._date = date.today()
         self._native = native
         self._foreign = foreign
+        
+        self._remove_from_practice_set = False
+        
+        Vocable.num_of_cards += 1
+        
+    # Alternative constructor for webscraping
+    @classmethod
+    def from_html(cls, webpage):
+        pass
         
     @property
     def language(self):
@@ -45,9 +56,21 @@ class Vocable:
     @foreign.setter
     def foreign(self, input_str):
         self._foreign = input_str
+        
+    @staticmethod
+    def set_language():
+        return 0
     
-    def train(self):
-        question = input(self.native + '\n')
-        if question == self.foreign:
-            print('correct')
-    
+    @staticmethod
+    def train(set_of_cards):
+        for card in set_of_cards:
+            question = input(card._native + '\n')
+            if question == card._foreign:
+                print('Correct')
+                card._phase += 1
+                card._remove_from_practice_set = True
+            else:
+                print('False')
+                card._phase -= 1
+        return set_of_cards
+        
