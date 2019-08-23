@@ -28,7 +28,12 @@ class Vocable:
     @classmethod
     def from_html(cls, webpage):
         pass
-        
+    
+    # Set your native language:
+    @classmethod
+    def set():
+        pass
+     
     @property
     def language(self):
         return self._language
@@ -57,6 +62,11 @@ class Vocable:
     def foreign(self, input_str):
         self._foreign = input_str
         
+    @foreign.deleter
+    def foreign(self):
+        print('Deleted foreign.')
+        self._foreign = None
+        
     @staticmethod
     def set_language():
         return 0
@@ -74,3 +84,8 @@ class Vocable:
                 card._phase -= 1
         return set_of_cards
         
+    def __repr__(self):
+        return "Vocable('{}', '{}', '{}')".format(self.language, self.native, self.foreign)
+    
+    def __str__(self):
+        return '{} for {}: {}'.format(self.language.capitalize(), self.native, self.foreign)
