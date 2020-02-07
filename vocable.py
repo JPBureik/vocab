@@ -19,6 +19,7 @@ class Vocable:
         self._date = date.today()
         self._native = native
         self._foreign = foreign
+
         
         self._remove_from_practice_set = False
         
