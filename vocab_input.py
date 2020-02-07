@@ -17,69 +17,21 @@ from tabulate import tabulate
 # Local application imports
 from vocable import Vocable
 
+<<<<<<< HEAD
 #this_card = Vocable('english', 'Jahr', 'year')
  
+=======
+this_card = Vocable('Jahr', 'year')
+
+>>>>>>> 18e1ed3078fa5945561e4bb770466bcdda976615
 #%% Select language
 
-language_choice = ['English', 'French']
-
-def language_select(language_choice):
-
-    lang = int(input('Select language: 0 = ' + language_choice[0] + ', 1 = ' + language_choice[1] + ':\n'))
-    tc.del_lines(1)
-    print('You have selected ' + language_choice[lang] + '. Enter <quit> to end. Enter <mod> to edit.')
-
-    return language_choice[lang]
-
-foreign_language = language_select(language_choice)
-
-#%% Load vocab file
+Vocable.select_foreign_language()
     
-# if exists
-# use map
+#%% Practice
 
-def load_vocab_file(foreign_language):
-    set_of_cards = set()
-    vocab_file = 'vocab_' + foreign_language[:2].lower() + '.h5'
-    df = pd.read_hdf(vocab_file, 'df')
-    for k in range(len(df)):
-        card = Vocable(foreign_language, df.iloc[k]['German'], df.iloc[k][foreign_language])
-        set_of_cards.add(card)
-        
-    return set_of_cards
-        
-set_of_cards = load_vocab_file(foreign_language)
+Vocable.practice()
 
-#%%
-
-class VocableSet:
-    def __init__(self):
-        pass
-
-class VocableCard(VocableSet):
-    def __init__(self):
-        super(VocableCard, self).__init__()
-
-#%% Add new vocab items
-
-native, foreign = '', ''
-
-def add_vocab_item(foreign_language, cards):
-    native = input('Type German: \n')
-    if native != 'quit':
-        foreign = input('Type ' + foreign_language + ': \n')
-        if foreign != 'quit':
-            card = Vocable(foreign_language, native, foreign)
-            cards.add(card)
-    else:
-        foreign = ''
-    return native, foreign, cards
-
-while native != 'quit' and foreign != 'quit':
-    native, foreign, cards = add_vocab_item(foreign_language, cards)
-    
-
-    
 #%%
     
 lang = language_select(language_choice)
