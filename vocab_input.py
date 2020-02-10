@@ -15,15 +15,8 @@ from tabulate import tabulate
 
 
 # Local application imports
-from vocable import Vocable
+from vocable import Vocable 
 
-<<<<<<< HEAD
-#this_card = Vocable('english', 'Jahr', 'year')
- 
-=======
-this_card = Vocable('Jahr', 'year')
-
->>>>>>> 18e1ed3078fa5945561e4bb770466bcdda976615
 #%% Select language
 
 Vocable.select_foreign_language()
