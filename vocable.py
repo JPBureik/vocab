@@ -18,26 +18,15 @@ class Vocable:
     _df = pd.DataFrame
     _num_for_practice = 100
     
-<<<<<<< HEAD
     def __init__(self, language, native, foreign):
         self._language = language
         self._phase = 0
         self._date = date.today()
         self._native = native
         self._foreign = foreign
-
         
         self._remove_from_practice_set = False
         
-=======
-    def __init__(self, native_item, foreign_item, new_card = True):
-        self._native_item = native_item
-        self._foreign_item = foreign_item
-        if new_card:
-            self._phase = 0
-            self._date = date.today()
-                
->>>>>>> 18e1ed3078fa5945561e4bb770466bcdda976615
         Vocable.num_of_cards += 1
         
     # Alternative constructor for webscraping
