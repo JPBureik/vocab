@@ -94,7 +94,7 @@ class Vocable:
                               'Practice\n'))
         if selection == 0:
             pass
-        elif selection ==1:
+        elif selection == 1:
             pass
         else:
             pass
