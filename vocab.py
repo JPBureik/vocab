@@ -18,4 +18,3 @@ from vocable import Vocable
 #%% Select language
 
 Vocable.initialize()
-    
