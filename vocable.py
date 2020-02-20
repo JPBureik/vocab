@@ -13,6 +13,7 @@ practicing vocable items.
 from datetime import date
 import pandas as pd
 from tabulate import tabulate
+from termcolor import colored
 
 class Vocable:
     """
@@ -123,43 +124,70 @@ class Vocable:
         # Present main meu options
         cls.__main_menu()
         
-    ''' Input
+    ''' Input: Enter and save new vocab items
     '''
     @classmethod
     def input(cls):
+        
         counter = 0 # Variable that indicates the progress
         
-        # Display progress
-        def display_progress(counter):
-            if counter == 1:
-                print(str(counter) + ' new entry added\n')
-            else:
-                print(str(counter) + ' new entries added\n')
-                
-        # During input check for duplicates
-        def check_for_duplicates(german):
-            if df[df['German'].str.contains(german)].empty == False:
-                print(colored('Duplicate warning:', 'red'))
-                print(df[df['German'].str.contains(german)])
-                proceed = input('Proceed? [y/n]\n')
-                if proceed == 'y':
-                    dupl = False
-                    # Delete lines of duplicate list
-                    tc.del_lines(len(df[df['German'].str.contains(german)])+4)
-                elif proceed == 'n':
-                    dupl = True
-                    # Delete lines of duplicate list
-                    tc.del_lines(len(df[df['German'].str.contains(german)])+3)
-                else:
-    
-                    dupl = False
-        return dupl
-                
-        while True:
-            input_str = input('Enter new vocab.\n')
-            print('You have entered ' + input_str + '.')
-            counter += 1
-            display_progress(counter)
+        # Input new vocab
+        native_input = input('Enter question [' + cls._native_language + ']:\n')
+        foreign_input = input('Enter answer  [' + cls._foreign_language +\
+                                              ']:\n')
+        
+        
+        # Check for duplicates
+        if cls._df[cls._df['German'].str.contains(native_input)].empty == False:
+            print(colored('Duplicate warning:', 'red'))
+            print(cls._df[cls._df['German'].str.contains(native_input)])
+            proceed = input('Proceed? [y/n]\n')
+#            if proceed == 'y':
+#                dupl = False
+#                # Delete lines of duplicate list
+#                tc.del_lines(len(df[df['German'].str.contains(german)])+4)
+#            elif proceed == 'n':
+#                dupl = True
+#                # Delete lines of duplicate list
+#                tc.del_lines(len(df[df['German'].str.contains(german)])+3)
+#            else:
+#    
+#                    dupl = False         
+
+
+
+        
+#        # Display progress
+#        def display_progress(counter):
+#            if counter == 1:
+#                print(str(counter) + ' new entry added\n')
+#            else:
+#                print(str(counter) + ' new entries added\n')
+#                
+#        # During input check for duplicates
+#        def check_for_duplicates(german):
+#            if df[df['German'].str.contains(german)].empty == False:
+#                print(colored('Duplicate warning:', 'red'))
+#                print(df[df['German'].str.contains(german)])
+#                proceed = input('Proceed? [y/n]\n')
+#                if proceed == 'y':
+#                    dupl = False
+#                    # Delete lines of duplicate list
+#                    tc.del_lines(len(df[df['German'].str.contains(german)])+4)
+#                elif proceed == 'n':
+#                    dupl = True
+#                    # Delete lines of duplicate list
+#                    tc.del_lines(len(df[df['German'].str.contains(german)])+3)
+#                else:
+#    
+#                    dupl = False
+#        return dupl
+#                
+#        while True:
+#            input_str = input('Enter new vocab.\n')
+#            print('You have entered ' + input_str + '.')
+#            counter += 1
+#            display_progress(counter)
             
     '''Edit
     '''

@@ -15,6 +15,6 @@ creating, editing and practicing vocable items.
 # Local application imports
 from vocable import Vocable 
 
-#%% Select language
+#%% Launch vocab programm
 
 Vocable.initialize()

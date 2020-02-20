@@ -11,47 +11,34 @@ import pandas as pd
 import terminal_commands as tc
 import datetime
 from termcolor import colored
-from tabulate import tabulate
-
-
-# Local application imports
-from vocable import Vocable 
-
-#%% Select language
-
-Vocable.select_foreign_language()
-    
-#%% Practice
-
-Vocable.practice()
-
-#%%
-    
-lang = language_select(language_choice)
-    
-list_of_cards = []
-input_str = ''
-
-''' Loop structure:
-    1- Create function
-    2- Create object
-    3- Map function onto object
-    '''
-
-for k in range(100):
-    while input_str != 'quit':
-        card = vocable.Vocable('lang', '', '')
-        input_str = input('Type native: ')
-        if input_str != 'quit':
-            card.native = input_str
-            input_str = input('Type ' + lang + ': ')
-            card.foreign = input_str
-            list_of_cards.append(card)
+from tabulate import tabulate    
 
 #%% Îgnore performance warning
 
 import warnings
 warnings.filterwarnings('ignore',category=pd.io.pytables.PerformanceWarning)
+
+#%% Select language
+
+language_choice = ['English', 'French']
+
+def language_select(language_choice):
+
+    lang = int(input('Select language: 0 = ' + language_choice[0] + ', 1 = ' + language_choice[1] + ':\n'))
+    tc.del_lines(1)
+    print('You have selected ' + language_choice[lang] + '. Enter <quit> to end. Enter <mod> to edit.')
+
+    return lang
+
+#%% Load vocab file
+
+vocab_file = ['vocab_en.h5', 'vocab_fr.h5']
+
+def load_vocab_file(lang):
+
+    df = pd.read_hdf(vocab_file[lang], 'df')
+
+    return df
 
 #%% Input new vocab
 
