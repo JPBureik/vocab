@@ -13,7 +13,7 @@ creating, editing and practicing vocable items.
 
 
 # Local application imports
-from vocable import Vocable 
+from vocable import Vocable
 
 #%% Launch vocab programm
 

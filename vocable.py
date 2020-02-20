@@ -15,6 +15,12 @@ import pandas as pd
 from tabulate import tabulate
 from termcolor import colored
 
+# Local application imports
+import terminal_commands as tc # Use tc.del_lines(int) to delete int previous
+                               # lines in terminal 
+
+#%%
+
 class Vocable:
     """
     A vocable card and methods for input, editing and practice.
@@ -89,9 +95,11 @@ class Vocable:
     # Main menu: present choice of all other public class methods after setup
     @classmethod
     def __main_menu(cls):
-        print('Main menu')
+        print('MAIN MENU')
         selection = int(input('Select action: 0 = Input, 1 = Edit, 2 = '\
                               'Practice\n'))
+        # Delete input from terminal
+        tc.del_lines(1)
         if selection == 0:
             cls.input()
         elif selection == 1:
@@ -115,6 +123,8 @@ class Vocable:
                                           cls._language_choice[0] + ', 1 = ' +\
                                           cls._language_choice[1] + ':\n'))
         cls._foreign_language = cls._language_choice[selection]
+        # Delete input from terminal
+        tc.del_lines(1)
         # Load corresponding vocab library
         cls.__load_vocab()
         # Print confirmation
@@ -129,12 +139,15 @@ class Vocable:
     @classmethod
     def input(cls):
         
+        # Confirm choice
+        print('You have selected INPUT.\n')
+        
         counter = 0 # Variable that indicates the progress
         
         # Input new vocab
         native_input = input('Enter question [' + cls._native_language + ']:\n')
-        foreign_input = input('Enter answer  [' + cls._foreign_language +\
-                                              ']:\n')
+#        foreign_input = input('Enter answer  [' + cls._foreign_language +\
+#                                              ']:\n')
         
         
         # Check for duplicates
@@ -142,17 +155,19 @@ class Vocable:
             print(colored('Duplicate warning:', 'red'))
             print(cls._df[cls._df['German'].str.contains(native_input)])
             proceed = input('Proceed? [y/n]\n')
-#            if proceed == 'y':
-#                dupl = False
-#                # Delete lines of duplicate list
-#                tc.del_lines(len(df[df['German'].str.contains(german)])+4)
-#            elif proceed == 'n':
-#                dupl = True
-#                # Delete lines of duplicate list
-#                tc.del_lines(len(df[df['German'].str.contains(german)])+3)
-#            else:
-#    
-#                    dupl = False         
+            if proceed == 'y':
+                dupl = False
+                 # Delete lines of duplicate list
+                tc.del_lines(len(cls._df[cls._df['German'].str.contains\
+                                         (native_input)])+4)
+            elif proceed == 'n':
+                dupl = True
+                # Delete lines of duplicate list
+                tc.del_lines(len(cls._df[cls._df['German'].str.\
+                                         contains(native_input)])+3)
+            else:
+    
+                dupl = False
 
 
 
