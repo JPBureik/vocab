@@ -221,3 +221,9 @@ class Vocable:
                 print('Correct!\n')
             else:
                 print('Incorrect!\n')
+                
+
+#%% EXECUTE
+                
+if __name__ == "__main__":
+    Vocable.initialize()
