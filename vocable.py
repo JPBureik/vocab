@@ -159,7 +159,7 @@ class Vocable:
                 dupl = False
                  # Delete lines of duplicate list
                 tc.del_lines(len(cls._df[cls._df['German'].str.contains\
-                                         (native_input)])+4)
+                                         (native_input)])+4) 
             elif proceed == 'n':
                 dupl = True
                 # Delete lines of duplicate list
@@ -193,7 +193,7 @@ class Vocable:
 #                    dupl = True
 #                    # Delete lines of duplicate list
 #                    tc.del_lines(len(df[df['German'].str.contains(german)])+3)
-#                else:
+#                else: b
 #    
 #                    dupl = False
 #        return dupl
