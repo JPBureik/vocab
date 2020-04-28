@@ -139,23 +139,24 @@ class Vocable:
     '''
     @classmethod
     def input(cls):
-
         # Confirm choice
         print('You have selected INPUT.\n')
-
         counter = 0 # Variable that indicates the progress
+        def input_loop():
+            # Input new vocab item: question
+            native_input = input('Enter question [' + cls._native_language + ']:\n')
+            # Check for duplicates
+            dupl_native = sm.string_matching(native_input, cls._native_language,\
+                cls._vocab_file)
+            # If no duplicate: input new vocab item: answer
+            if dupl_native == False:
+               foreign_input = input('Enter answer  [' + cls._foreign_language + ']:\n')
+               # Check for duplicates
+               dupl_native = sm.string_matching(foreign_input, cls._foreign_language, cls._vocab_file)
+            else:
+                input_loop()
+        input_loop()
 
-        # Input new vocab
-        native_input = input('Enter question [' + cls._native_language + ']:\n')
-#        foreign_input = input('Enter answer  [' + cls._foreign_language +\
-#                                              ']:\n')
-
-        # Check for duplicates
-        dupl = sm.string_matching(
-            native_input,
-            cls._native_language,
-            cls._vocab_file
-            )
 
 
 

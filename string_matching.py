@@ -33,7 +33,7 @@ def string_matching(input_str, column_name, h5_file):
             dupl = True
             # Delete lines of duplicate list
             tc.del_lines(len(database[database[column_name].str.\
-                                     contains(input_str)])+5)
+                                     contains(input_str)])+6)
         else:
 
             dupl = False
