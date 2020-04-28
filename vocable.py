@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jul 29 01:59:10 2019 
+Created on Mon Jul 29 01:59:10 2019
 
 @author: JP
 
@@ -17,38 +17,39 @@ from termcolor import colored
 
 # Local application imports
 import terminal_commands as tc # Use tc.del_lines(int) to delete int previous
-                               # lines in terminal 
+                               # lines in terminal
+import string_matching as sm # Check for duplicates during input
 
 #%%
 
 class Vocable:
     """
     A vocable card and methods for input, editing and practice.
-    
+
     Init args:
         native_item(str): vocable item in native language
         foreign_item(str): vocable item in foreign language
     """
-    
-    
+
+
     """
     TOP-LEVEL PRIVATE ATTRIBUTES
     """
-    
+
     # Modifiable class variables
     _native_language = 'German'
     _language_choice = ['English', 'French']    # Foreign languages in which you
                                                 # have vocab items
     _num_for_practice = 100 # Max number of cards for daily practice
-    
+
     # Initialize class variables needed for methods
     _set_of_cards = set()   # This is your entire library of vocab items in a
                             # given foreign language
-    
+
     """
     INIT
     """
-    
+
     def __init__(self, native, foreign):
         # Vocab attributes
         self._phase = 0
@@ -60,7 +61,7 @@ class Vocable:
     """
     PRIVATE METHODS
     """
-    
+
     # Load vocab from file (pandas DataFrame) and create set of vocable cards
     @classmethod
     def __load_vocab(cls):
@@ -73,8 +74,8 @@ class Vocable:
                            item[1][cls._foreign_language])
             card._phase = item[1]['Phase']
             card._date = item[1]['Date']
-            cls._set_of_cards.add(card)    
-            
+            cls._set_of_cards.add(card)
+
     # Display overview of vocab library for a given foreign language
     @classmethod
     def __overview(cls):
@@ -91,7 +92,7 @@ class Vocable:
         # Print table
         print(tabulate([table_list],headers=header_line,tablefmt='fancy_grid',\
                        numalign='center',stralign = 'center'))
-        
+
     # Main menu: present choice of all other public class methods after setup
     @classmethod
     def __main_menu(cls):
@@ -106,13 +107,13 @@ class Vocable:
             pass
         else:
             pass
- 
-    
+
+
     """
     PUBLIC METHODS
     """
-    
-    
+
+
     ''' Initialization: Choose foreign language, display overview, then enter
     main menu
     '''
@@ -133,52 +134,39 @@ class Vocable:
         cls.__overview()
         # Present main meu options
         cls.__main_menu()
-        
+
     ''' Input: Enter and save new vocab items
     '''
     @classmethod
     def input(cls):
-        
+
         # Confirm choice
         print('You have selected INPUT.\n')
-        
+
         counter = 0 # Variable that indicates the progress
-        
+
         # Input new vocab
         native_input = input('Enter question [' + cls._native_language + ']:\n')
 #        foreign_input = input('Enter answer  [' + cls._foreign_language +\
 #                                              ']:\n')
-        
-        
+
         # Check for duplicates
-        if cls._df[cls._df['German'].str.contains(native_input)].empty == False:
-            print(colored('Duplicate warning:', 'red'))
-            print(cls._df[cls._df['German'].str.contains(native_input)])
-            proceed = input('Proceed? [y/n]\n')
-            if proceed == 'y':
-                dupl = False
-                 # Delete lines of duplicate list
-                tc.del_lines(len(cls._df[cls._df['German'].str.contains\
-                                         (native_input)])+4) 
-            elif proceed == 'n':
-                dupl = True
-                # Delete lines of duplicate list
-                tc.del_lines(len(cls._df[cls._df['German'].str.\
-                                         contains(native_input)])+3)
-            else:
-    
-                dupl = False
+        dupl = sm.string_matching(
+            native_input,
+            cls._native_language,
+            cls._vocab_file
+            )
 
 
 
-        
+
 #        # Display progress
 #        def display_progress(counter):
 #            if counter == 1:
 #                print(str(counter) + ' new entry added\n')
 #            else:
 #                print(str(counter) + ' new entries added\n')
-#                
+#
 #        # During input check for duplicates
 #        def check_for_duplicates(german):
 #            if df[df['German'].str.contains(german)].empty == False:
@@ -194,16 +182,16 @@ class Vocable:
 #                    # Delete lines of duplicate list
 #                    tc.del_lines(len(df[df['German'].str.contains(german)])+3)
 #                else: b
-#    
+#
 #                    dupl = False
 #        return dupl
-#                
+#
 #        while True:
 #            input_str = input('Enter new vocab.\n')
 #            print('You have entered ' + input_str + '.')
 #            counter += 1
 #            display_progress(counter)
-            
+
     '''Edit
     '''
     @classmethod
@@ -221,9 +209,9 @@ class Vocable:
                 print('Correct!\n')
             else:
                 print('Incorrect!\n')
-                
+
 
 #%% EXECUTE
-                
+
 if __name__ == "__main__":
     Vocable.initialize()
