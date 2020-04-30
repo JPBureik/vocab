@@ -18,8 +18,6 @@ import terminal_commands as tc
 def string_matching(input_str, column_name, h5_file):
 
     database = pd.read_hdf(h5_file, 'df')
-
-
     if database[database[column_name].str.contains(input_str)].empty == False:
         print(colored('Duplicate warning:', 'red'))
         print(database[database[column_name].str.contains(input_str)])
@@ -34,8 +32,5 @@ def string_matching(input_str, column_name, h5_file):
             # Delete lines of duplicate list
             tc.del_lines(len(database[database[column_name].str.\
                                      contains(input_str)])+6)
-        else:
-
-            dupl = False
 
     return dupl

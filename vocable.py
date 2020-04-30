@@ -102,7 +102,7 @@ class Vocable:
         # Delete input from terminal
         tc.del_lines(1)
         if selection == 0:
-            cls.input()
+            cls.input_loop()
         elif selection == 1:
             pass
         else:
@@ -138,60 +138,75 @@ class Vocable:
     ''' Input: Enter and save new vocab items
     '''
     @classmethod
-    def input(cls):
-        # Confirm choice
-        print('You have selected INPUT.\n')
-        counter = 0 # Variable that indicates the progress
-        def input_loop():
-            # Input new vocab item: question
-            native_input = input('Enter question [' + cls._native_language + ']:\n')
-            # Check for duplicates
-            dupl_native = sm.string_matching(native_input, cls._native_language,\
-                cls._vocab_file)
-            # If no duplicate: input new vocab item: answer
-            if dupl_native == False:
-               foreign_input = input('Enter answer  [' + cls._foreign_language + ']:\n')
-               # Check for duplicates
-               dupl_native = sm.string_matching(foreign_input, cls._foreign_language, cls._vocab_file)
+    def input_loop(cls):
+
+        # Define local aux functions
+        def foreign_input():
+            # Change enclosed variable to exit input function
+            nonlocal continue_input
+            # Update enclosed counter variable
+            nonlocal counter
+            # Input new vocab item: answer
+            foreign_input_str = input('Enter question [' +\
+                cls._foreign_language + ']:\n')
+            # Check for exit command
+            if foreign_input_str != 'q':
+                # Check for duplicates
+                dupl_foreign = sm.string_matching(foreign_input_str,\
+                    cls._foreign_language, cls._vocab_file)
+                if dupl_foreign == False:
+                    # Update progress counter
+                    counter += 1
+                    # Delete lines from previous input
+                    if counter == 1:
+                        tc.del_lines(5)
+                    else:
+                        tc.del_lines(6)
+                    '''' save '''
+                    print('')
+                    # Display progress
+                    if counter == 1:
+                        print('{} new entry added.'.format(counter))
+                    else:
+                        print('{} new entries added.'.format(counter))
+                else:
+                    foreign_input() # Recursion
             else:
-                input_loop()
-        input_loop()
+                # Delete lines from previous input
+                tc.del_lines(9)
+                continue_input = False
 
+        def native_input():
+            # Change enclosed variable to exit input function
+            nonlocal continue_input
+            # Input new vocab item: question
+            native_input_str = input('Enter question [' +\
+                cls._native_language + ']:\n')
+            # Check for exit command
+            if native_input_str != 'q':
+                # Check for duplicates
+                dupl_native = sm.string_matching(native_input_str,\
+                    cls._native_language, cls._vocab_file)
+                if dupl_native == False:
+                    foreign_input()
+                else:
+                    native_input() # Recursion
+            else:
+                # Delete lines from previous input
+                tc.del_lines(7)
+                continue_input = False
 
+        # Confirm selection choice
+        print('You have selected INPUT. Enter q to exit.\n')
 
+        counter = 0 # Variable that indicates the progress
+        continue_input = True # Variable that exits the input function
 
+        while continue_input == True:
+            native_input()
 
-#        # Display progress
-#        def display_progress(counter):
-#            if counter == 1:
-#                print(str(counter) + ' new entry added\n')
-#            else:
-#                print(str(counter) + ' new entries added\n')
-#
-#        # During input check for duplicates
-#        def check_for_duplicates(german):
-#            if df[df['German'].str.contains(german)].empty == False:
-#                print(colored('Duplicate warning:', 'red'))
-#                print(df[df['German'].str.contains(german)])
-#                proceed = input('Proceed? [y/n]\n')
-#                if proceed == 'y':
-#                    dupl = False
-#                    # Delete lines of duplicate list
-#                    tc.del_lines(len(df[df['German'].str.contains(german)])+4)
-#                elif proceed == 'n':
-#                    dupl = True
-#                    # Delete lines of duplicate list
-#                    tc.del_lines(len(df[df['German'].str.contains(german)])+3)
-#                else: b
-#
-#                    dupl = False
-#        return dupl
-#
-#        while True:
-#            input_str = input('Enter new vocab.\n')
-#            print('You have entered ' + input_str + '.')
-#            counter += 1
-#            display_progress(counter)
+        # Return to main menu after input
+        cls.__main_menu()
 
     '''Edit
     '''
