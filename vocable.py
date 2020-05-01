@@ -103,7 +103,7 @@ class Vocable:
         if selection == '0':
             cls.input_loop()
         elif selection == '1':
-            pass
+            cls.edit()
         elif selection == '2':
             pass
         elif selection == 'q':
