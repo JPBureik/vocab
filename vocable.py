@@ -204,13 +204,17 @@ class Vocable:
                         print('{} new entries added.'.format(counter))
                 else:
                     foreign_input()  # Recursion
-            else:
+            elif foreign_input_str == 'q':
                 # Delete lines from previous input
                 if counter < 1:
                     tc.del_lines(8)
                 else:
                     tc.del_lines(9)
                 continue_input = False
+            elif foreign_input_str == 'm':
+                # Go back to modify native input
+                tc.del_lines(4)
+                native_input()
 
         def native_input():
             # Change enclosed variable to exit input function
@@ -237,7 +241,8 @@ class Vocable:
                 continue_input = False
 
         # Confirm selection choice
-        print('You have selected INPUT. Enter q to exit.\n')
+        print('You have selected INPUT. Enter m to modify previous item. Enter'
+              ' q to exit.\n')
 
         counter = 0  # Variable that indicates the progress
         continue_input = True  # Variable that exits the input function
