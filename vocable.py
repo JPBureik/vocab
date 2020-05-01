@@ -12,6 +12,7 @@ and practicing vocable items.
 # Standard library imports
 from datetime import date
 import pandas as pd
+import sys
 from tabulate import tabulate
 from termcolor import colored
 
@@ -95,15 +96,22 @@ class Vocable:
     @classmethod
     def __main_menu(cls):
         print('MAIN MENU')
-        selection = int(input('Select action: 0 = Input, 1 = Edit, 2 = '
-                              'Practice\n'))
+        selection = input('Select action: 0 = Input, 1 = Edit, 2 = Practice;'
+                          ' q = Exit\n')
         # Delete input from terminal
         tc.del_lines(1)
-        if selection == 0:
+        if selection == '0':
             cls.input_loop()
-        elif selection == 1:
+        elif selection == '1':
             pass
+        elif selection == '2':
+            pass
+        elif selection == 'q':
+            # exit
+            print('Exiting')
+            sys.exit()
         else:
+            # Throw error
             pass
 
     """
@@ -213,7 +221,9 @@ class Vocable:
     '''
     @classmethod
     def edit(cls):
-        pass
+
+        # Confirm selection choice
+        print('You have selected EDIT. Enter q to exit.\n')
 
     '''Practice
     '''
