@@ -108,7 +108,7 @@ class Vocable:
             pass
         elif selection == 'q':
             # exit
-            print('Exiting')
+            print('Exit')
             sys.exit()
         else:
             # Throw error
@@ -123,13 +123,15 @@ class Vocable:
     '''
     @classmethod
     def initialize(cls):
+        # Display name of program
+        print('VOCAB TRAINING PROGRAM')
         # Select foreign language and store choice in class variable
         selection = int(input('Select language: 0 = ' +
                               cls._language_choice[0] + ', 1 = ' +
                               cls._language_choice[1] + ':\n'))
         cls._foreign_language = cls._language_choice[selection]
         # Delete input from terminal
-        tc.del_lines(1)
+        tc.del_lines(2)
         # Load corresponding vocab library
         cls.__load_vocab()
         # Print confirmation
@@ -145,7 +147,27 @@ class Vocable:
     def input_loop(cls):
 
         # Add new entries to DataFrame and save
-        # def
+        def save_input():
+            # Parameters for df
+            col = ['German', cls._foreign_language, 'Phase', 'Date']
+            alignment = ['', ' ']
+            # Append new items to existing vocab df
+            foreign = input('Type answer  ' + alignment[lang] + '[' +
+                            cls._foreign_language + ']: ')
+            # Check for abort signal
+            if foreign != 'quit' and foreign != 'mod':
+                df2 = pd.DataFrame([[german, foreign, 0, datetime.date.today()]], columns=col)
+                df = df.append(df2, ignore_index=True)
+                # Count number of added items
+                counter += 1
+                mod = False
+            elif foreign == 'mod':
+                mod = True
+                tc.del_lines(1)
+            elif foreign == 'quit':
+                mod = False
+                german = 'quit'  # In order to break main loop
+            return counter, df, german, mod
 
         # Define local aux functions
         def foreign_input():
@@ -157,7 +179,7 @@ class Vocable:
             foreign_input_str = input('Enter question [' +
                                       cls._foreign_language + ']:\n')
             # Check for exit command
-            if foreign_input_str != 'q':
+            if foreign_input_str not in ['q', 'm']:
                 # Check for duplicates
                 dupl_foreign = sm.string_matching(foreign_input_str,
                                                   cls._foreign_language,
@@ -166,8 +188,11 @@ class Vocable:
                     # Update progress counter
                     counter += 1
                     # Delete lines from previous input
-                    if counter == 1:
+                    if counter == 0:
                         tc.del_lines(5)
+                    elif counter == 1:
+                        print('')  # Add new line to display progress
+                        tc.del_lines(6)
                     else:
                         tc.del_lines(6)
                     '''' save '''
@@ -181,7 +206,10 @@ class Vocable:
                     foreign_input()  # Recursion
             else:
                 # Delete lines from previous input
-                tc.del_lines(9)
+                if counter < 1:
+                    tc.del_lines(8)
+                else:
+                    tc.del_lines(9)
                 continue_input = False
 
         def native_input():
@@ -202,7 +230,10 @@ class Vocable:
                     native_input()  # Recursion
             else:
                 # Delete lines from previous input
-                tc.del_lines(7)
+                if counter < 1:
+                    tc.del_lines(6)
+                else:
+                    tc.del_lines(7)
                 continue_input = False
 
         # Confirm selection choice
