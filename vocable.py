@@ -13,6 +13,7 @@ and practicing vocable items.
 from datetime import date
 import pandas as pd
 import sys
+import warnings
 from tabulate import tabulate
 from termcolor import colored
 
@@ -20,6 +21,16 @@ from termcolor import colored
 import terminal_commands as tc  # Use tc.del_lines(int) to delete int previous
 # lines in terminal
 import string_matching as sm  # Check for duplicates during input
+
+# Ignore warning for inefficient pickling when storing mixed data types
+warnings.filterwarnings('ignore', category=pd.io.pytables.PerformanceWarning)
+
+# Dev flags
+save = False
+
+'''
+BEFORE PRINTING ANYTHING ALWAYS REPRINT HEADER FOR LAYOUT
+'''
 
 
 class Vocable:
@@ -124,6 +135,7 @@ class Vocable:
     @classmethod
     def initialize(cls):
         # Display name of program
+        tc.del_lines(1)
         print('VOCAB TRAINING PROGRAM')
         # Select foreign language and store choice in class variable
         selection = int(input('Select language: 0 = ' +
@@ -147,30 +159,19 @@ class Vocable:
     def input_loop(cls):
 
         # Add new entries to DataFrame and save
-        def save_input():
-            # Parameters for df
+        def save_input(native_input_str, foreign_input_str):
+            # Parameters for DataFrame
             col = ['German', cls._foreign_language, 'Phase', 'Date']
-            alignment = ['', ' ']
-            # Append new items to existing vocab df
-            foreign = input('Type answer  ' + alignment[lang] + '[' +
-                            cls._foreign_language + ']: ')
-            # Check for abort signal
-            if foreign != 'quit' and foreign != 'mod':
-                df2 = pd.DataFrame([[german, foreign, 0, datetime.date.today()]], columns=col)
-                df = df.append(df2, ignore_index=True)
-                # Count number of added items
-                counter += 1
-                mod = False
-            elif foreign == 'mod':
-                mod = True
-                tc.del_lines(1)
-            elif foreign == 'quit':
-                mod = False
-                german = 'quit'  # In order to break main loop
-            return counter, df, german, mod
+            # Create DataFrame containing the new input items
+            df_new = pd.DataFrame([[native_input_str, foreign_input_str, 0,
+                                    date.today()]], columns=col)
+            # Add to existing DataFrame
+            cls._df = cls._df.append(df_new, ignore_index=True)
+            # Save appended DataFrame to original vocab .h5 file
+            cls._df.to_hdf(cls._vocab_file, key='df', mode='w')
 
         # Define local aux functions
-        def foreign_input():
+        def foreign_input(native_input_str):
             # Change enclosed variable to exit input function
             nonlocal continue_input
             # Update enclosed counter variable
@@ -188,22 +189,32 @@ class Vocable:
                     # Update progress counter
                     counter += 1
                     # Delete lines from previous input
-                    if counter == 0:
-                        tc.del_lines(5)
-                    elif counter == 1:
-                        print('')  # Add new line to display progress
-                        tc.del_lines(6)
+                    if counter == 1:
+                        tc.del_lines(15)
                     else:
-                        tc.del_lines(6)
-                    '''' save '''
-                    print('')
-                    # Display progress
+                        tc.del_lines(16)
+                    # Save
+                    if save is True:
+                        save_input(native_input_str, foreign_input_str)
+                    # Display updates: Reload vocab file to update changes
+                    cls.__load_vocab()
+                    # Display updates: Reprint header
+                    print('VOCAB TRAINING PROGRAM\nYou have selected ' +
+                          cls._foreign_language + '.')
+                    # Display updates: Print updated overview
+                    cls.__overview()
+                    # Display updates: Reprint main menu and input confirmation
+                    print('MAIN MENU\nSelect action: 0 = Input, 1 = Edit, 2'
+                          ' = Practice; q = Exit\nYou have selected INPUT. '
+                          'Enter m to modify previous item. Enter q to exit.'
+                          '\n')
+                    # Display progress counter
                     if counter == 1:
                         print('{} new entry added.'.format(counter))
                     else:
                         print('{} new entries added.'.format(counter))
                 else:
-                    foreign_input()  # Recursion
+                    foreign_input(native_input_str)  # Recursion
             elif foreign_input_str == 'q':
                 # Delete lines from previous input
                 if counter < 1:
@@ -229,7 +240,7 @@ class Vocable:
                                                  cls._native_language,
                                                  cls._vocab_file)
                 if dupl_native is False:
-                    foreign_input()
+                    foreign_input(native_input_str)
                 else:
                     native_input()  # Recursion
             else:
