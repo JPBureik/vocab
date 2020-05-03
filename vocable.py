@@ -20,7 +20,6 @@ from termcolor import colored
 # Local application imports
 import terminal_commands as tc  # Use tc.del_lines(int) to delete int previous
 # lines in terminal
-import string_matching as sm  # Check for duplicates during input
 
 # Ignore warning for inefficient pickling when storing mixed data types
 warnings.filterwarnings('ignore', category=pd.io.pytables.PerformanceWarning)
@@ -28,10 +27,6 @@ warnings.filterwarnings('ignore', category=pd.io.pytables.PerformanceWarning)
 ''' EDIT THIS FOR V1.0 RELEASE'''
 # Dev flags
 save = False
-
-'''
-BEFORE PRINTING ANYTHING ALWAYS REPRINT HEADER FOR LAYOUT
-'''
 
 
 class Vocable:
@@ -160,6 +155,33 @@ class Vocable:
     @classmethod
     def input_loop(cls):
         """Input: Enter and save new vocab items"""
+
+        def input_string_matching(input_str, column_name):
+            """String matching for input loop.
+
+            This function matches strings between new input string and a
+            string in a specified column of a Pandas DataFrame saved to a .h5
+            file to avoid duplicates. It displays a list of matching strings
+            and returns a boolean."""
+            if (cls._df[cls._df[column_name].str.contains(input_str)].empty is
+                    False):
+                print(colored('Duplicate warning:', 'red'))
+                print(cls._df[cls._df[column_name].str.contains(input_str)])
+                proceed = input('Proceed? [y/n]\n')
+                if proceed == 'y':
+                    dupl = False
+                    # Delete lines of duplicate list
+                    tc.del_lines(len(cls._df[cls._df[column_name].str.contains
+                                             (input_str)])+4)
+                elif proceed == 'n':
+                    dupl = True
+                    # Delete lines of duplicate list
+                    tc.del_lines(len(cls._df[cls._df[column_name].str.contains
+                                             (input_str)])+6)
+            else:
+                dupl = False
+            return dupl
+
         # Add new entries to DataFrame and save
         def save_input(native_input_str, foreign_input_str):
             # Create new vocable card:
@@ -187,9 +209,8 @@ class Vocable:
             # Check for exit command
             if foreign_input_str not in ['q', 'm']:
                 # Check for duplicates
-                dupl_foreign = sm.input_string_matching(foreign_input_str,
-                                                        cls._foreign_language,
-                                                        cls._vocab_file)
+                dupl_foreign = input_string_matching(foreign_input_str,
+                                                     cls._foreign_language)
                 if dupl_foreign is False:
                     # Update progress counter
                     counter += 1
@@ -241,9 +262,8 @@ class Vocable:
             # Check for exit command
             if native_input_str != 'q':
                 # Check for duplicates
-                dupl_native = sm.input_string_matching(native_input_str,
-                                                       cls._native_language,
-                                                       cls._vocab_file)
+                dupl_native = input_string_matching(native_input_str,
+                                                    cls._native_language)
                 if dupl_native is False:
                     foreign_input(native_input_str)
                 else:
@@ -272,6 +292,18 @@ class Vocable:
     @classmethod
     def edit_loop(cls):
         """Edit"""
+
+        def edit_string_matching(search_str, column_name):
+            """This function matches strings between a search string and specified
+            colummns in a Pandas DataFrame saved to a .h5 file. It returns a
+            DataFrame containing the lines of the original DataFrame that
+            string match."""
+            search_results = pd.DataFrame()
+            german_results = cls._df[cls._df['German'].str.contains(search_str)]
+            search_results = search_results.append(german_results)
+            print(search_results)
+            return search_results
+
         # Find a vocab item and edit it
         def search_vocab():
             # Change enclosed variable to exit edit function
@@ -281,9 +313,8 @@ class Vocable:
             # Check for exit command
             if search_str not in ['q']:
                 # Search vocab database
-                search_results = sm.edit_string_matching(search_str,
-                                                         cls._foreign_language,
-                                                         cls._vocab_file)
+                search_results = edit_string_matching(search_str,
+                                                      cls._foreign_language)
                 # Edit
                 # Save
                 # Option for multiple edits off same search
