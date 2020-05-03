@@ -25,6 +25,7 @@ import string_matching as sm  # Check for duplicates during input
 # Ignore warning for inefficient pickling when storing mixed data types
 warnings.filterwarnings('ignore', category=pd.io.pytables.PerformanceWarning)
 
+''' EDIT THIS FOR V1.0 RELEASE'''
 # Dev flags
 save = False
 
@@ -61,6 +62,8 @@ class Vocable:
     """
 
     def __init__(self, native, foreign):
+        """Initialize a vocab card with native and foreign vocable, set phase
+        to 0 and date to today."""
         # Vocab attributes
         self._phase = 0
         self._date = date.today()
@@ -71,9 +74,10 @@ class Vocable:
     PRIVATE METHODS
     """
 
-    # Load vocab from file (pandas DataFrame) and create set of vocable cards
     @classmethod
     def __load_vocab(cls):
+        """Load vocab from file (pandas DataFrame) and create set of vocable
+        cards."""
         # Load dataframe
         cls._vocab_file = 'vocab_' + cls._foreign_language[:2].lower() + '.h5'
         cls._df = pd.read_hdf(cls._vocab_file, 'df')
@@ -85,9 +89,9 @@ class Vocable:
             card._date = item[1]['Date']
             cls._set_of_cards.add(card)
 
-    # Display overview of vocab library for a given foreign language
     @classmethod
     def __overview(cls):
+        """Display overview of vocab library for a given foreign language."""
         table_list = []
         header_column = cls._foreign_language
         header_line = ['', 'Total', 'Phase 0', 'Phase 1', 'Phase 2', 'Phase 3',
@@ -103,9 +107,10 @@ class Vocable:
                        tablefmt='fancy_grid', numalign='center',
                        stralign='center'))
 
-    # Main menu: present choice of all other public class methods after setup
     @classmethod
     def __main_menu(cls):
+        """Main menu: present choice of all other public class methods after
+        setup."""
         print('MAIN MENU')
         selection = input('Select action: 0 = Input, 1 = Edit, 2 = Practice;'
                           ' q = Exit\n')
@@ -114,7 +119,7 @@ class Vocable:
         if selection == '0':
             cls.input_loop()
         elif selection == '1':
-            cls.edit()
+            cls.edit_loop()
         elif selection == '2':
             pass
         elif selection == 'q':
@@ -129,11 +134,10 @@ class Vocable:
     PUBLIC METHODS
     """
 
-    ''' Initialization: Choose foreign language, display overview, then enter
-    main menu
-    '''
     @classmethod
     def initialize(cls):
+        """Initialization: Choose foreign language, display overview, then enter
+        main menu."""
         # Display name of program
         tc.del_lines(1)
         print('VOCAB TRAINING PROGRAM')
@@ -153,18 +157,19 @@ class Vocable:
         # Present main meu options
         cls.__main_menu()
 
-    ''' Input: Enter and save new vocab items
-    '''
     @classmethod
     def input_loop(cls):
-
+        """Input: Enter and save new vocab items"""
         # Add new entries to DataFrame and save
         def save_input(native_input_str, foreign_input_str):
+            # Create new vocable card:
+            new_card = Vocable(native_input_str, foreign_input_str)
             # Parameters for DataFrame
             col = ['German', cls._foreign_language, 'Phase', 'Date']
-            # Create DataFrame containing the new input items
-            df_new = pd.DataFrame([[native_input_str, foreign_input_str, 0,
-                                    date.today()]], columns=col)
+            # Create DataFrame containing the new input item
+            df_new = pd.DataFrame([[new_card._native, new_card._foreign,
+                                    new_card._phase,  new_card._date]],
+                                  columns=col)
             # Add to existing DataFrame
             cls._df = cls._df.append(df_new, ignore_index=True)
             # Save appended DataFrame to original vocab .h5 file
@@ -182,9 +187,9 @@ class Vocable:
             # Check for exit command
             if foreign_input_str not in ['q', 'm']:
                 # Check for duplicates
-                dupl_foreign = sm.string_matching(foreign_input_str,
-                                                  cls._foreign_language,
-                                                  cls._vocab_file)
+                dupl_foreign = sm.input_string_matching(foreign_input_str,
+                                                        cls._foreign_language,
+                                                        cls._vocab_file)
                 if dupl_foreign is False:
                     # Update progress counter
                     counter += 1
@@ -236,9 +241,9 @@ class Vocable:
             # Check for exit command
             if native_input_str != 'q':
                 # Check for duplicates
-                dupl_native = sm.string_matching(native_input_str,
-                                                 cls._native_language,
-                                                 cls._vocab_file)
+                dupl_native = sm.input_string_matching(native_input_str,
+                                                       cls._native_language,
+                                                       cls._vocab_file)
                 if dupl_native is False:
                     foreign_input(native_input_str)
                 else:
@@ -264,18 +269,45 @@ class Vocable:
         # Return to main menu after input
         cls.__main_menu()
 
-    '''Edit
-    '''
     @classmethod
-    def edit(cls):
+    def edit_loop(cls):
+        """Edit"""
+        # Find a vocab item and edit it
+        def search_vocab():
+            # Change enclosed variable to exit edit function
+            nonlocal continue_edit
+            search_str = input('Search ' + cls._foreign_language + ' vocab '
+                               'database:\n')
+            # Check for exit command
+            if search_str not in ['q']:
+                # Search vocab database
+                search_results = sm.edit_string_matching(search_str,
+                                                         cls._foreign_language,
+                                                         cls._vocab_file)
+                # Edit
+                # Save
+                # Option for multiple edits off same search
+                # Option to delete items
+                # Delete previous lines
+                # Recursion
+            else:
+                continue_edit = False
 
         # Confirm selection choice
-        print('You have selected EDIT. Enter q to exit.\n')
+        print('You have selected EDIT. Enter m to modify an item. Enter q to '
+              'exit.\n')
 
-    '''Practice
-    '''
+        continue_edit = True  # Variable that exits the input function
+
+        while continue_edit is True:
+            search_vocab()
+
+        # Return to main menu after input
+        cls.__main_menu()
+
     @classmethod
     def practice(cls):
+        """Practice"""
         for card in cls._set_of_cards:
             question = card._native_item
             answer = input(question + '\n')

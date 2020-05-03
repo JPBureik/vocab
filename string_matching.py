@@ -5,9 +5,8 @@ Created on Tue Apr 28 21:28:32 2020
 
 author: jp
 
-This function matches strings between new input and a string in a specified
-column of a Pandas DataFrame saved to a .h5 file to avoid duplicates. It
-displays a list of matching strings and returns a boolean.
+This module provides functions that impplement string matching for different
+methods in voable.py
 """
 
 # Standard library imports
@@ -16,8 +15,11 @@ from termcolor import colored
 import terminal_commands as tc
 
 
-def string_matching(input_str, column_name, h5_file):
-
+def input_string_matching(input_str, column_name, h5_file):
+    """This function matches strings between new input string and a string in a
+    specified column of a Pandas DataFrame saved to a .h5 file to avoid
+    duplicates. It displays a list of matching strings and returns a boolean.
+    """
     database = pd.read_hdf(h5_file, 'df')
     if database[database[column_name].str.contains(input_str)].empty is False:
         print(colored('Duplicate warning:', 'red'))
@@ -37,3 +39,13 @@ def string_matching(input_str, column_name, h5_file):
         dupl = False
 
     return dupl
+
+
+def edit_string_matching(input_str, column_name, h5_file):
+    """This function matches strings between a search string and specified
+    colummns in a Pandas DataFrame saved to a .h5 file. It returns a DataFrame
+    containing the lines of the original DataFrame that string match.
+    """
+    search_df = 0
+    print('Searching for edit.\n')
+    return search_df
