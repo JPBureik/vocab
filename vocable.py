@@ -299,8 +299,18 @@ class Vocable:
             DataFrame containing the lines of the original DataFrame that
             string match."""
             search_results = pd.DataFrame()
-            german_results = cls._df[cls._df['German'].str.contains(search_str)]
-            search_results = search_results.append(german_results)
+            # Search native items and append to search results
+            native_results = cls._df[cls._df[cls._native_language].str.
+                                     contains(search_str)]
+            search_results = search_results.append(native_results)
+            # Search foreign items and append excluding duplicate finds
+            foreign_results = cls._df[cls._df[cls._foreign_language].str.
+                                      contains(search_str)]
+            for k in range(len(foreign_results)):
+                if (foreign_results.index.tolist()[k] not in native_results.
+                        index.tolist()):
+                    search_results = search_results.append(foreign_results.
+                                                           iloc[k])
             print(search_results)
             return search_results
 
@@ -315,6 +325,7 @@ class Vocable:
                 # Search vocab database
                 search_results = edit_string_matching(search_str,
                                                       cls._foreign_language)
+
                 # Edit
                 # Save
                 # Option for multiple edits off same search
