@@ -369,6 +369,7 @@ class Vocable:
         print('You have selected EDIT. Enter q to exit.\n')
 
         continue_edit = True  # Variable that exits the input function
+        saved_items = False  # Delete additional saved statement after exit
 
         while continue_edit is True:
             search_results = search_vocab()
@@ -384,14 +385,23 @@ class Vocable:
                 else:
                     print(search_results)
                     edit_search_results(search_results)
-                    # Save and reload
+                    if save is True:
+                        cls._df.to_hdf(cls._vocab_file, key='df', mode='w')
+                        cls.__load_vocab()
+                    saved_items = True
+                    tc.del_lines(13)
+                    print('Saved')
+
                     # Option for multiple edits off same search
                     # Option to delete items
                     # Delete previous lines
                     # Recursion
                     # Return to main menu after input
             else:
-                tc.del_lines(6)
+                if saved_items is False:
+                    tc.del_lines(6)
+                else:
+                    tc.del_lines(7)
         cls.__main_menu()
 
     @classmethod
