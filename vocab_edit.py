@@ -11,22 +11,26 @@ import terminal_commands as tc
 from tabulate import tabulate
 
 
-#%% Ignore performance warning
+# %% Ignore performance warning
 
 import warnings
-warnings.filterwarnings('ignore',category=pd.io.pytables.PerformanceWarning)
+warnings.filterwarnings('ignore', category=pd.io.pytables.PerformanceWarning)
 
-#%% Select language
+# %% Select language
 
 language_choice = ['English', 'French']
 
+
 def language_select(language_choice):
 
-    lang = int(input('Select language: 0 = ' + language_choice[0] + ', 1 = ' + language_choice[1] + ':\n'))
+    lang = int(input('Select language: 0 = ' +
+                     language_choice[0] + ', 1 = ' + language_choice[1] + ':\n'))
     tc.del_lines(1)
-    print('You have selected ' + language_choice[lang] + '. Enter <quit> to end. Enter <mod> to edit.')
+    print('You have selected ' + language_choice[lang] +
+          '. Enter <quit> to end. Enter <mod> to edit.')
 
     return lang
+
 
 def search():
 
@@ -44,14 +48,16 @@ def search():
     def print_table(language_choice, lang, df):
         table_list = []
         header_column = language_choice[lang]
-        header_line = ['','Total', 'Phase 0', 'Phase 1','Phase 2','Phase 3','Phase 4','Phase 5', 'LTM', 'Last practiced']
+        header_line = ['', 'Total', 'Phase 0', 'Phase 1', 'Phase 2',
+                       'Phase 3', 'Phase 4', 'Phase 5', 'LTM', 'Last practiced']
         table_list.append(header_column)
         table_list.append(len(df))
-        for l in range(1,8,1):
+        for l in range(1, 8, 1):
             table_list.append(len(df.loc[df['Phase'] == l-1, language_choice[lang]]))
         table_list.append(max(df['Date']))
         # Print table
-        print(tabulate([table_list],headers=header_line,tablefmt='fancy_grid',numalign='center',stralign = 'center'))
+        print(tabulate([table_list], headers=header_line,
+                       tablefmt='fancy_grid', numalign='center', stralign='center'))
         # Print one line before search line
         print('\n')
 
@@ -85,13 +91,13 @@ def search():
         else:
             lines_to_del = len(search_results) + 5
             # Display entire DataFrame of search results
-            pd.set_option('display.expand_frame_repr',False)
-            pd.set_option('display.max_colwidth',75)
+            pd.set_option('display.expand_frame_repr', False)
+            pd.set_option('display.max_colwidth', 75)
             # Change indeces for display while saving old indices for mod ref
             org_index_list = search_results.index.tolist()
             if len(search_results) > 1:
                 lines_to_del += 2
-                print_index_list = list(range(0,len(search_results),1))
+                print_index_list = list(range(0, len(search_results), 1))
                 search_results.index = print_index_list
             # Print search results
             print(search_results)
@@ -163,18 +169,21 @@ def search():
         # Print overview (inside loop so that changes are immediate)
         print_table(language_choice, lang, df)
 
-        search_results, search_term, mod_pass = search_vocab(mod_pass, mod_pass_search_term, df, language_choice, lang)
+        search_results, search_term, mod_pass = search_vocab(
+            mod_pass, mod_pass_search_term, df, language_choice, lang)
 
         # Display search results unless abort
         if search_term != 'quit':
             lines_to_del, org_index_list = display_search_results(search_results)
 
             # Ask to continue
-            mod, search_term, search_results = ask_continue(search_term, search_results, lines_to_del)
+            mod, search_term, search_results = ask_continue(
+                search_term, search_results, lines_to_del)
 
             # Edit vocab
             if mod == True:
-                df, mod_pass, mod_pass_search_term = edit_vocab(search_results, df, org_index_list, language_choice, lang, lines_to_del)
+                df, mod_pass, mod_pass_search_term = edit_vocab(
+                    search_results, df, org_index_list, language_choice, lang, lines_to_del)
                 # Save vocab_file
                 df.to_hdf(vocab_file[lang], key='df', mode='w')
 
@@ -182,7 +191,8 @@ def search():
         if search_term != 'quit':
             tc.del_lines(7)
 
-#%% Execute
+# %% Execute
+
 
 if __name__ == '__main__':
 

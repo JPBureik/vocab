@@ -294,10 +294,10 @@ class Vocable:
         """Edit"""
 
         def edit_string_matching(search_str, column_name):
-            """This function matches strings between a search string and specified
-            colummns in a Pandas DataFrame saved to a .h5 file. It returns a
-            DataFrame containing the lines of the original DataFrame that
-            string match."""
+            """This function matches strings between a search string and
+            specified colummns in a Pandas DataFrame saved to a .h5 file. It
+            returns a DataFrame containing the lines of the original DataFrame
+            that string match."""
             search_results = pd.DataFrame()
             # Search native items and append to search results
             native_results = cls._df[cls._df[cls._native_language].str.
@@ -311,8 +311,43 @@ class Vocable:
                         index.tolist()):
                     search_results = search_results.append(foreign_results.
                                                            iloc[k])
-            print(search_results)
             return search_results
+
+        def edit_search_results(search_results):
+            # If one result:
+            if len(search_results) == 1:
+                # tc.del_lines(4)
+                select_field = int(input('Select field to edit: 0 = ' +
+                                         'question, 1 = answer:\n'))
+                # tc.del_lines(1)
+                # Correct question
+                if select_field == 0:
+                    correct_question = input('Enter correct question:\n')
+                    cls._df.at[search_results.index.tolist()[0],
+                               cls._native_language] = correct_question
+                # Correct answer
+                elif select_field == 1:
+                    correct_answer = input('Enter correct answer:\n')
+                    cls._df.at[search_results.index.tolist()[0],
+                               cls._foreign_language] = correct_answer
+
+            # If multiple results
+            else:
+                select_item = int(input('Select item to edit:\n'))
+                print(search_results.loc[select_item][0] + '\t' +
+                      search_results.loc[select_item][1])
+                select_field = int(input('Select field to edit: 0 = ' +
+                                         'question, 1 = answer:\n'))
+                # Correct question
+                if select_field == 0:
+                    correct_question = input('Enter correct question:\n')
+                    cls._df.at[select_item, cls._native_language] =\
+                        correct_question
+                # Correct answer
+                elif select_field == 1:
+                    correct_answer = input('Enter correct answer:\n')
+                    cls._df.at[select_item, cls._foreign_language] =\
+                        correct_answer
 
         # Find a vocab item and edit it
         def search_vocab():
@@ -321,30 +356,42 @@ class Vocable:
             search_str = input('Search ' + cls._foreign_language + ' vocab '
                                'database:\n')
             # Check for exit command
-            if search_str not in ['q']:
+            if search_str != 'q':
                 # Search vocab database
                 search_results = edit_string_matching(search_str,
                                                       cls._foreign_language)
-
-                # Edit
-                # Save
-                # Option for multiple edits off same search
-                # Option to delete items
-                # Delete previous lines
-                # Recursion
             else:
                 continue_edit = False
+                search_results = ''
+            return search_results
 
         # Confirm selection choice
-        print('You have selected EDIT. Enter m to modify an item. Enter q to '
-              'exit.\n')
+        print('You have selected EDIT. Enter q to exit.\n')
 
         continue_edit = True  # Variable that exits the input function
 
         while continue_edit is True:
-            search_vocab()
-
-        # Return to main menu after input
+            search_results = search_vocab()
+            if continue_edit is not False:
+                if len(search_results) == 0:
+                    tc.del_lines(2)
+                    cont = input('No entries found! <Enter> = continue' +
+                                 '\n')
+                    tc.del_lines(2)
+                    if cont == 'q':
+                        continue_edit = False
+                        tc.del_lines(4)
+                else:
+                    print(search_results)
+                    edit_search_results(search_results)
+                    # Save and reload
+                    # Option for multiple edits off same search
+                    # Option to delete items
+                    # Delete previous lines
+                    # Recursion
+                    # Return to main menu after input
+            else:
+                tc.del_lines(6)
         cls.__main_menu()
 
     @classmethod
