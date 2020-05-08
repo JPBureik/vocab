@@ -314,6 +314,7 @@ class Vocable:
             return search_results
 
         def edit_search_results(search_results):
+            nonlocal continue_edit
             # If one result:
             if len(search_results) == 1:
                 select_field = int(input('Select field to edit: 0 = ' +
@@ -331,30 +332,37 @@ class Vocable:
                                cls._foreign_language] = correct_answer
             # If multiple results
             else:
-                select_item = int(input('Select item to edit:\n'))
+                select_item = input('Select item to edit:\n')
                 tc.del_lines(1)
-                print(search_results.loc[select_item][0] + '\t' +
-                      search_results.loc[select_item][1])
-                select_field = int(input('Select field to edit: 0 = ' +
-                                         'question, 1 = answer:\n'))
-                tc.del_lines(1)
-                # Correct question
-                if select_field == 0:
-                    correct_question = input('Enter correct question:\n')
-                    cls._df.at[select_item, cls._native_language] =\
-                        correct_question
-                # Correct answer
-                elif select_field == 1:
-                    correct_answer = input('Enter correct answer:\n')
-                    cls._df.at[select_item, cls._foreign_language] =\
-                        correct_answer
+                if select_item != 'q':
+                    select_item = int(select_item)
+                    print(search_results.loc[select_item][0] + '\t' +
+                          search_results.loc[select_item][1])
+                    select_field = int(input('Select field to edit: 0 = ' +
+                                             'question, 1 = answer:\n'))
+                    tc.del_lines(1)
+                    # Correct question
+                    if select_field == 0:
+                        correct_question = input('Enter correct question:\n')
+                        cls._df.at[select_item, cls._native_language] =\
+                            correct_question
+                    # Correct answer
+                    elif select_field == 1:
+                        correct_answer = input('Enter correct answer:\n')
+                        cls._df.at[select_item, cls._foreign_language] =\
+                            correct_answer
+                else:
+                    continue_edit = False
 
         # Find a vocab item and edit it
-        def search_vocab():
+        def search_vocab(multi_edit_str):
             # Change enclosed variable to exit edit function
             nonlocal continue_edit
-            search_str = input('Search ' + cls._foreign_language + ' vocab '
-                               'database:\n')
+            if multi_edit_str == '':
+                search_str = input('Search ' + cls._foreign_language +
+                                   ' vocab database:\n')
+            else:
+                search_str = multi_edit_str
             # Check for exit command
             if search_str != 'q':
                 # Search vocab database
@@ -363,19 +371,26 @@ class Vocable:
             else:
                 continue_edit = False
                 search_results = ''
-            return search_results
+            return search_results, search_str
 
         # Confirm selection choice
         print('You have selected EDIT. Enter q to exit.\n')
 
         continue_edit = True  # Variable that exits the input function
         saved_items = False  # Delete additional saved statement after exit
+        multi_edit_str = ''
 
         while continue_edit is True:
             lines_to_delete = 6  # For deleting previous search results
             if saved_items is True:
                 lines_to_delete += 1  # Delete previous 'Saved' statement
-            search_results = search_vocab()
+            search_results, search_str = search_vocab(multi_edit_str)
+            # Set up multi-item edit off same search
+            if len(search_results) > 1:
+                multi_edit_str = search_str
+                lines_to_delete -= 2
+            else:
+                multi_edit_str = ''
             if continue_edit is not False:
                 if len(search_results) == 0:
                     tc.del_lines(lines_to_delete - 4)
@@ -389,17 +404,19 @@ class Vocable:
                 else:
                     print(search_results)
                     edit_search_results(search_results)
-                    if save is True:
-                        cls._df.to_hdf(cls._vocab_file, key='df', mode='w')
-                        cls.__load_vocab()
-                    # Delete previous search results before next search
-                    if len(search_results) > 1:
-                        lines_to_delete += 2
-                    tc.del_lines(lines_to_delete + len(search_results))
-                    saved_items = True
-                    print('Saved')
-                    # Option for multiple edits off same search
-                    # Option to delete items
+                    if continue_edit is not False:
+                        if save is True:
+                            cls._df.to_hdf(cls._vocab_file, key='df', mode='w')
+                            cls.__load_vocab()
+                        # Delete previous search results before next search
+                        if len(search_results) > 1:
+                            lines_to_delete += 2
+                        tc.del_lines(lines_to_delete + len(search_results))
+                        saved_items = True
+                        print('Saved')
+                        # Option to delete items
+                    else:
+                        tc.del_lines(lines_to_delete + len(search_results) + 4)
             else:
                 tc.del_lines(lines_to_delete)
         cls.__main_menu()
