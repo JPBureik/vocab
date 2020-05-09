@@ -315,21 +315,26 @@ class Vocable:
 
         def edit_search_results(search_results):
             nonlocal continue_edit
+            deleted_items = False
             # If one result:
             if len(search_results) == 1:
-                select_field = int(input('Select field to edit: 0 = ' +
-                                         'question, 1 = answer:\n'))
+                select_field = input('Select field to edit: 0 = ' +
+                                     'question, 1 = answer; d = ' +
+                                     'delete item:\n')
                 tc.del_lines(1)
                 # Correct question
-                if select_field == 0:
+                if select_field == '0':
                     correct_question = input('Enter correct question:\n')
                     cls._df.at[search_results.index.tolist()[0],
                                cls._native_language] = correct_question
                 # Correct answer
-                elif select_field == 1:
+                elif select_field == '1':
                     correct_answer = input('Enter correct answer:\n')
                     cls._df.at[search_results.index.tolist()[0],
                                cls._foreign_language] = correct_answer
+                elif select_field == 'd':
+                    delete_vocab_item(search_results.index.tolist()[0])
+                    deleted_items = True
             # If multiple results
             else:
                 select_item = input('Select item to edit:\n')
@@ -338,21 +343,26 @@ class Vocable:
                     select_item = int(select_item)
                     print(search_results.loc[select_item][0] + '\t' +
                           search_results.loc[select_item][1])
-                    select_field = int(input('Select field to edit: 0 = ' +
-                                             'question, 1 = answer:\n'))
+                    select_field = input('Select field to edit: 0 = ' +
+                                         'question, 1 = answer; d = ' +
+                                         'delete item:\n')
                     tc.del_lines(1)
                     # Correct question
-                    if select_field == 0:
+                    if select_field == '0':
                         correct_question = input('Enter correct question:\n')
                         cls._df.at[select_item, cls._native_language] =\
                             correct_question
                     # Correct answer
-                    elif select_field == 1:
+                    elif select_field == '1':
                         correct_answer = input('Enter correct answer:\n')
                         cls._df.at[select_item, cls._foreign_language] =\
                             correct_answer
+                    elif select_field == 'd':
+                        delete_vocab_item(select_item)
+                        deleted_items = True
                 else:
                     continue_edit = False
+            return deleted_items
 
         # Find a vocab item and edit it
         def search_vocab(multi_edit_str):
@@ -373,12 +383,18 @@ class Vocable:
                 search_results = ''
             return search_results, search_str
 
+        def delete_vocab_item(index):
+            confirm = input('Delete vocable card ' + str(index) + '? [y/n]\n')
+            if confirm == 'y':
+                cls._df = cls._df.drop(index)
+            tc.del_lines(2)
+
         # Confirm selection choice
         print('You have selected EDIT. Enter q to exit.\n')
 
         continue_edit = True  # Variable that exits the input function
         saved_items = False  # Delete additional saved statement after exit
-        multi_edit_str = ''
+        multi_edit_str = ''  # For multi-item edit off same search
 
         while continue_edit is True:
             lines_to_delete = 6  # For deleting previous search results
@@ -403,7 +419,7 @@ class Vocable:
                         tc.del_lines(4)
                 else:
                     print(search_results)
-                    edit_search_results(search_results)
+                    deleted_items = edit_search_results(search_results)
                     if continue_edit is not False:
                         if save is True:
                             cls._df.to_hdf(cls._vocab_file, key='df', mode='w')
@@ -411,10 +427,12 @@ class Vocable:
                         # Delete previous search results before next search
                         if len(search_results) > 1:
                             lines_to_delete += 2
+                        # Delete less lines if deleted items
+                        if deleted_items is True:
+                            lines_to_delete -= 2
                         tc.del_lines(lines_to_delete + len(search_results))
                         saved_items = True
                         print('Saved')
-                        # Option to delete items
                     else:
                         tc.del_lines(lines_to_delete + len(search_results) + 4)
             else:
