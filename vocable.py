@@ -47,7 +47,7 @@ class Vocable:
     _language_choice = ['English', 'French']    # Foreign languages in which
     # you have vocab items
     _num_for_practice = 100  # Max number of cards for daily practice
-
+    _phase_interval = [0, 1, 3, 9, 29, 90, 300]  # days before next practice
     # Initialize class variables needed for methods
     _set_of_cards = set()   # This is your entire library of vocab items in a
     # given foreign language
@@ -442,13 +442,23 @@ class Vocable:
     @classmethod
     def practice(cls):
         """Practice"""
-        for card in cls._set_of_cards:
-            question = card._native_item
-            answer = input(question + '\n')
-            if answer == card._foreign_item:
-                print('Correct!\n')
-            else:
-                print('Incorrect!\n')
+
+        def select_practice_items():
+            df_today = pd.DataFrame()
+            # Determine elegible vocab based on time since last practice
+            for k in range(len(cls._df)):
+                delta = datetime.date.today() - cls._df.iloc[k]['Date']
+                delta = delta.days
+                if cls._df.iloc[k]['Phase'] < len(phase_interval)-1:
+                    if delta > phase_interval[cls._df.iloc[k]['Phase']]:
+                        df_today = df_today.append(df[k:k+1],
+                                                   ignore_index=True)
+            # Randomly select 100 items from eligible vocab to train
+            if len(df_today) > vocab_max:
+                df_today = df_today.sample(vocab_max)
+            # Prioritize lower phases
+
+        select_practice_items()
 
 
 # %% EXECUTE
