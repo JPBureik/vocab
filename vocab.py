@@ -56,14 +56,24 @@ class Vocable:
         ...
 
     def _enter_manually(self):
+        new_item_foreign = input()
+        new_item_native = input()
+
+    @classmethod
+    def _load_vocab(cls):
         ...
 
-    def _load_vocab(self):
+    @classmethod
+    def _save_vocab(cls):
         ...
 
     """
     PUBLIC METHODS
     """
+
+    @classmethod
+    def choose_foreign_lang(cls):
+        print('Choose language to practice: ', cls._foreign_lang_choice)
 
     @classmethod
     def input(cls):
