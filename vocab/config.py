@@ -9,9 +9,9 @@ Main configuration file.
 """
 
 # General setup:
-native_language = 'Deutsch'  # str
+native_language = 'German'  # str
 
 # Vocab collections:
 foreign_languages = []
 foreign_languages.append('English')
-foreign_languages.append('Français')
+foreign_languages.append('French')
