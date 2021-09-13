@@ -10,9 +10,14 @@ Vocab class.
 A class for training vocab.
 """
 
+# Standard library imports:
+
+
+# Local imports:
+from vocab.config import native_lang
 
 class Vocab():
 
 
     def __init__(self):
-        pass
+        self.native_lang = native_lang
