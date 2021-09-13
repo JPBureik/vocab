@@ -15,7 +15,7 @@ import os
 import pandas as pd
 
 # Local imports:
-from vocab.config import native_lang, daily_pract_amt
+from vocab.config import *
 
 
 class VocabCollection():
@@ -23,7 +23,7 @@ class VocabCollection():
     """ ---------- INIT ---------- """
 
     def __init__(self, foreign_language):
-        self.native_lang = native_lang.lower()
+        self.native_lang = native_language.lower()
         self.foreign_language = foreign_language.lower()
         self._daily_pract_amt = daily_pract_amt
         self._phase_intvls = dict(enumerate([0, 1, 3, 9, 29, 90, 300])) # days before next practice
