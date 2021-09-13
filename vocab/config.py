@@ -15,3 +15,6 @@ native_language = 'German'  # str
 foreign_languages = []
 foreign_languages.append('English')
 foreign_languages.append('French')
+
+# Daily amount of vocab items to practice per foreign language:
+daily_pract_amt = 100
