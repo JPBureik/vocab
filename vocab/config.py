@@ -9,12 +9,12 @@ Main configuration file.
 """
 
 # General setup:
-native_language = 'German'  # str
+native_language = 'German'  # str  # Use setter
 
 # Vocab collections:
 foreign_languages = []
-foreign_languages.append('English')
-foreign_languages.append('French')
+foreign_languages.append('English')  # Use setter
+foreign_languages.append('French')  # Use setter
 
 # Daily amount of vocab items to practice per foreign language:
-daily_pract_amt = 100
+daily_pract_amt = 100  # Use setter

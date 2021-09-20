@@ -35,6 +35,8 @@ class VocabCollection():
 
     """ ---------- PROPERTIES ---------- """
 
+    # Use setters for config input.
+
     """ ---------- PRIVATE METHODS ---------- """
 
     def _mkdir(self):
