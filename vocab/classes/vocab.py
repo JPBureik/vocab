@@ -5,7 +5,7 @@ Created on Mon Sep 13 21:52:28 2021
 
 @author: jp
 
-Vocab class.
+VocabCollection class.
 
 A class for training vocab.
 """
