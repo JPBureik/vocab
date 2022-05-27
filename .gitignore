@@ -49,5 +49,8 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
-# IPython Checkpoints:
+# IPython Checkpoints
 .ipynb_checkpoints/
+
+# Virtualenv
+.venv/
