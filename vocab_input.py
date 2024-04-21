@@ -19,11 +19,11 @@ warnings.filterwarnings('ignore',category=pd.io.pytables.PerformanceWarning)
 
 #%% Select language
 
-language_choice = ['English', 'French']
+language_choice = ['English', 'French', 'Spanish']
 
 def language_select(language_choice):
 
-    lang = int(input('Select language: 0 = ' + language_choice[0] + ', 1 = ' + language_choice[1] + ':\n'))
+    lang = int(input('Select language: 0 = ' + language_choice[0] + ', 1 = ' + language_choice[1] + ', 2 = ' + language_choice[2] + ':\n'))
     tc.del_lines(1)
     print('You have selected ' + language_choice[lang] + '. Enter <quit> to end. Enter <mod> to edit.')
 
@@ -78,7 +78,7 @@ def vocab_input(lang):
     def register_new_vocab(counter, language_choice, lang, german, df):
         # Parameters for df
         col = ['German', language_choice[lang], 'Phase', 'Date']
-        alignment = ['', ' ']
+        alignment = ['', ' ', '']
         # Append new items to existing vocab df
         foreign = input ('Type answer  ' + alignment[lang] + '[' + language_choice[lang] +  ']: ')
         # Check for abort signal
@@ -97,7 +97,7 @@ def vocab_input(lang):
         return counter, df, german, mod
 
     # Initialize parameters
-    vocab_file = ['vocab_en.h5', 'vocab_fr.h5']
+    vocab_file = ['vocab_en.h5', 'vocab_fr.h5', 'vocab_es.h5']
     german = ''
     counter = 0
     mod = False

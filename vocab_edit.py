@@ -18,11 +18,11 @@ warnings.filterwarnings('ignore',category=pd.io.pytables.PerformanceWarning)
 
 #%% Select language
 
-language_choice = ['English', 'French']
+language_choice = ['English', 'French', 'Spanish']
 
 def language_select(language_choice):
 
-    lang = int(input('Select language: 0 = ' + language_choice[0] + ', 1 = ' + language_choice[1] + ':\n'))
+    lang = int(input('Select language: 0 = ' + language_choice[0] + ', 1 = ' + language_choice[1] + ', 2 = ' + language_choice[2] + ':\n'))
     tc.del_lines(1)
     print('You have selected ' + language_choice[lang] + '. Enter <quit> to end. Enter <mod> to edit.')
 
@@ -150,7 +150,7 @@ def search():
             mod_pass_search_term = search_term
         return df, mod_pass, mod_pass_search_term
 
-    vocab_file = ['vocab_en.h5', 'vocab_fr.h5']
+    vocab_file = ['vocab_en.h5', 'vocab_fr.h5', 'vocab_es.h5']
     search_term = ''
     mod_pass = False
     mod_pass_search_term = ''

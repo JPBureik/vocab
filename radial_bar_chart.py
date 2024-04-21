@@ -124,14 +124,16 @@ def create_radial_chart(df, figsize, fontsize, color_theme = 'Purple'):
     outer_ring, _ = ax.pie(ring_arrays[0],radius=outer_radius,
                         colors=[color(0.9), color(0.15)],
                         startangle = 90,
-                        counterclock = False)
+                        counterclock = False,
+                        normalize=None)
     plt.setp( outer_ring, width=ring_width, edgecolor=outer_edge_color)
     
     inner_ring, _ = ax.pie(ring_arrays[1],
                              radius=inner_radius,
                              colors=[color(0.55), color(0.05)],
                              startangle = 90,
-                             counterclock = False)
+                             counterclock = False,
+                             normalize=None)
     plt.setp(inner_ring, width=ring_width, edgecolor=inner_edge_color)
     
     # add labels and format plots

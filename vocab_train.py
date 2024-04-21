@@ -14,19 +14,21 @@ from termcolor import colored
 from tabulate import tabulate
 import radial_bar_chart as rbc
 from matplotlib import pyplot as plt
+import matplotlib
 
 #%% Ignore performance warning
 
 import warnings
 warnings.filterwarnings('ignore',category=pd.io.pytables.PerformanceWarning)
+warnings.filterwarnings("ignore",category=matplotlib.cbook.mplDeprecation)
 
 #%% Select language
 
-language_choice = ['English', 'French']
+language_choice = ['English', 'French', 'Spanish']
 
 def language_select(language_choice):
 
-    lang = int(input('Select language: 0 = ' + language_choice[0] + ', 1 = ' + language_choice[1] + ':\n'))
+    lang = int(input('Select language: 0 = ' + language_choice[0] + ', 1 = ' + language_choice[1] + ', 2 = ' + language_choice[2] + ':\n'))
     tc.del_lines(1)
     print('You have selected ' + language_choice[lang] + '. Enter <quit> to end. Enter <mod> to edit.')
 
@@ -34,7 +36,7 @@ def language_select(language_choice):
 
 #%% Load vocab file
 
-vocab_file = ['vocab_en.h5', 'vocab_fr.h5']
+vocab_file = ['vocab_en.h5', 'vocab_fr.h5', 'vocab_es.h5']
 
 def load_vocab_file(lang):
 
