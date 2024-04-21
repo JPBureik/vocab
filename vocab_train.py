@@ -14,11 +14,13 @@ from termcolor import colored
 from tabulate import tabulate
 import radial_bar_chart as rbc
 from matplotlib import pyplot as plt
+import matplotlib
 
 #%% Ignore performance warning
 
 import warnings
 warnings.filterwarnings('ignore',category=pd.io.pytables.PerformanceWarning)
+warnings.filterwarnings("ignore",category=matplotlib.cbook.mplDeprecation)
 
 #%% Select language
 
