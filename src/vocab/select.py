@@ -8,10 +8,11 @@ Created on Wed Mar  6 12:32:15 2024
 # Standard library imports:
 import pandas as pd
 from os import path
+import datetime
 from sqlalchemy import create_engine
 
 # Package imports:
-from config import mysql_user, mysql_password
+from config import mysql_user, mysql_password, session_volume, phase_intervals
 
 
 engine = create_engine(f"mysql+mysqlconnector://{mysql_user}:{mysql_password}@localhost/vocab")
@@ -26,11 +27,10 @@ import_query = f"""SELECT * FROM {foreign_lang};"""
 
 table_df = pd.read_sql(import_query, con=engine)
 
+# Use ID column as index:
+table_df.set_index('ID', inplace=True)
 
+# Select for practice:
 
-datadirpath = '/Users/jp/prog/personal/vocab'
-
-datapath = path.join(datadirpath, f'vocab_{foreign_lang[:2].lower()}.h5')
-
-# Load from .hdf-5:
-df = pd.read_hdf(datapath, 'df')
+# Determine days since last practice
+days_since_last_practice = (datetime.date.today() - table_df['Date']).apply(lambda x: x.days)
