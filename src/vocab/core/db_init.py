@@ -12,9 +12,9 @@ from os import path
 from tqdm import tqdm
 
 # Package imports:
-from config import mysql_user, mysql_password
-from to_db import to_db
-from vocable import Vocable
+from vocab.core.config import mysql_user, mysql_password
+from vocab.core.to_db import to_db
+from vocab.core.vocable import Vocable
 
 # Datapaths to init dfs:
 datadirpath = '/Users/jp/prog/personal/vocab'

@@ -11,8 +11,7 @@ from datetime import date
 from mysql.connector import connect, Error
 
 # Package imports:
-# Local imports:
-from config import mysql_user, mysql_password
+from vocab.core.config import mysql_user, mysql_password
 
 # Add entry to database:
 def to_db(vocable, phase=0, date=None):

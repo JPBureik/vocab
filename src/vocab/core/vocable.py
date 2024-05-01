@@ -7,7 +7,7 @@ Created on Sun Jan 21 00:37:36 2024
 """
 
 # Package imports:
-from config import native_lang
+from vocab.core.config import native_lang
 
 class Vocable:
     
