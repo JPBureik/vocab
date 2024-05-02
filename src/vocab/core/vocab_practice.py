@@ -11,6 +11,7 @@ from vocab.core.load_from_db import load_from_db
 from vocab.core.language_select import language_select
 from vocab.core.select_for_practice import select_for_practice
 from vocab.vis.display_stats import print_table, progress_bar
+from vocab.vis.terminal_commands import del_lines
 
 # Select foreign language:
 foreign_lang = language_select()
@@ -29,5 +30,7 @@ progress_bar(correct_counter)
 pract_df = select_for_practice(table_df)
 
 # Practice:
-
+for idx in pract_df.index:
+    foreign = input(pract_df.loc[idx]['German'] + ': \n')
+    del_lines(2)
 
