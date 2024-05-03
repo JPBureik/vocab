@@ -10,27 +10,30 @@ Created on Sun Apr 21 23:15:57 2024
 from vocab.core.load_from_db import load_from_db
 from vocab.core.language_select import language_select
 from vocab.core.select_for_practice import select_for_practice
-from vocab.vis.display_stats import print_table, progress_bar
-from vocab.vis.terminal_commands import del_lines
+from vocab.vis.terminal_interface import TerminalInterface
+
+# Initialize terminal interface:
+ti = TerminalInterface()
 
 # Select foreign language:
-foreign_lang = language_select()
+foreign_lang = language_select(ti)
 
 # Load table from database:
 table_df = load_from_db(foreign_lang)
 
 # Display stats:
-print_table(foreign_lang, table_df)
+ti.print_table(foreign_lang, table_df)
 
 # Display progress:
 correct_counter = 0 # Show progress as correct_counter/vocab_total
-progress_bar(correct_counter)
+ti.progress_bar(correct_counter)
 
 # Select for practice:
 pract_df = select_for_practice(table_df)
 
 # Practice:
 for idx in pract_df.index:
+    ti.print_phase(idx, pract_df)
     foreign = input(pract_df.loc[idx]['German'] + ': \n')
-    del_lines(2)
+    ti.del_lines(2)
 
