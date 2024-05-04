@@ -39,6 +39,9 @@ def select_for_practice(table_df):
                               ]
     
     # Randomly select from eligible items:
-    pract_df = eligible_items.sample(session_volume)
+    if eligible_items.shape[0] < session_volume:
+        pract_df = eligible_items
+    else:
+        pract_df = eligible_items.sample(session_volume)
     
     return pract_df
