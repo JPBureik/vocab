@@ -61,7 +61,7 @@ def create_radial_chart(df, figsize, fontsize, color_theme = 'Purple'):
                horizontalalignment='center',
                verticalalignment='center',
                fontsize = fontsize,
-               family = 'sans-serif')
+               family = 'sans-serif', color=neongreen)
 
     #USE: Formats a number with the apropiate currency tags.
     #INPUT: a currency number
@@ -86,7 +86,7 @@ def create_radial_chart(df, figsize, fontsize, color_theme = 'Purple'):
                       horizontalalignment=horizontal_aligner(df),
                       verticalalignment=vertical_aligner(df),
                       fontsize = 20,
-                      family = 'sans-serif')
+                      family = 'sans-serif', color=neongreen)
 
     def add_sub_center_label(df):
         amount = 'Goal: ' + get_currency_label(df.iloc[0,1])
@@ -95,7 +95,7 @@ def create_radial_chart(df, figsize, fontsize, color_theme = 'Purple'):
                 amount,
                 horizontalalignment='center',
                 verticalalignment='top',
-                fontsize = 22,family = 'sans-serif')
+                fontsize = 22,family = 'sans-serif', color=neongreen)
 
     #######################################################################
     ###                                                    MAIN FUNCTION                                                        ###
@@ -115,21 +115,23 @@ def create_radial_chart(df, figsize, fontsize, color_theme = 'Purple'):
     if df.iloc[0, 0] > df.iloc[0, 1]:
         ring_to_label = 0
         outer_edge_color = None
-        inner_edge_color = 'white'
+        inner_edge_color = 'darkslategrey'
     else:
         ring_to_label = 1
-        outer_edge_color, inner_edge_color = ['white', None]
+        outer_edge_color, inner_edge_color = ['darkslategrey', None]
+        
+    neongreen = tuple(i / 255 for i in (11, 225, 110, 255))
     
     # plot logic
     outer_ring, _ = ax.pie(ring_arrays[0],radius=outer_radius,
-                        colors=[color(0.9), color(0.15)],
+                        colors=[neongreen, 'darkslategrey'],
                         startangle = 90,
                         counterclock = False)
     plt.setp( outer_ring, width=ring_width, edgecolor=outer_edge_color)
     
     inner_ring, _ = ax.pie(ring_arrays[1],
                              radius=inner_radius,
-                             colors=[color(0.55), color(0.05)],
+                             colors=['k', 'k'],
                              startangle = 90,
                              counterclock = False)
     plt.setp(inner_ring, width=ring_width, edgecolor=inner_edge_color)
@@ -141,9 +143,5 @@ def create_radial_chart(df, figsize, fontsize, color_theme = 'Purple'):
     ax.axis('equal')
     plt.margins(0,0)
 #    plt.autoscale('enable')
-    
+    plt.show()
     return plt
-
-    # call the chart maker function and display the chart
-    periscope.output(create_radial_chart(df, color_theme='Purple'))
-    # Currently supported color themes: Grey, Purple, Blue, Green, Orange, Red

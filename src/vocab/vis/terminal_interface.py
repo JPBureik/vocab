@@ -9,7 +9,7 @@ All functions that interact with the terminal interface take the instance of
 ti as argument.
 
 """
-
+import os
 import sys
 import subprocess
 import pandas as pd
@@ -18,6 +18,9 @@ from matplotlib import pyplot as plt
 
 from vocab.core.config import session_volume
 from vocab.vis import radial_bar_chart as rbc
+
+import matplotlib
+
 
 import warnings
 import matplotlib.cbook
@@ -40,9 +43,9 @@ class TerminalInterface(metaclass=Singleton):
     
     def __init__(self):
         self._t = sys.stdout
-        # Set itermplot as Matplotlib backend:
-        subprocess.run('export MPLBACKEND="module://itermplot"', shell=True)
-
+        # Set backend for Matplotlib:
+        matplotlib.use('module://itermplot')
+        
     def del_lines(self, number_of_lines):
         for k in range(number_of_lines):
             self._t.write(self.CURSOR_UP_ONE)
@@ -71,6 +74,6 @@ class TerminalInterface(metaclass=Singleton):
     @staticmethod
     def print_phase(idx, pract_df):
         chart_data = pd.DataFrame([[pract_df.loc[idx]['Phase'],6]])
-        fig_bas = rbc.create_radial_chart(chart_data, figsize = (0.3,0.3), fontsize = 7, color_theme = 'Blue')
-        plt.show()
+        rbc.create_radial_chart(chart_data, figsize = (0.8,0.8), fontsize = 14, color_theme = 'Purple')
+        
         
