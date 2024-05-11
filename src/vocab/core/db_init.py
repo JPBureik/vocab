@@ -9,7 +9,7 @@ Created on Wed Mar  6 11:29:23 2024
 # Standard library imports;
 import pandas as pd
 from os import path
-from tqdm import tqdm
+# from tqdm import tqdm
 
 # Package imports:
 from vocab.core.config import mysql_user, mysql_password
@@ -18,16 +18,16 @@ from vocab.core.vocable import Vocable
 
 # Datapaths to init dfs:
 datadirpath = '/Users/jp/prog/personal/vocab'
-languages = ['English', 'French']
+languages = ['English', 'French', 'Spanish']
 
-for foreign_lang in languages:
+for foreign_lang in ('Spanish',):
     
-    datapath = path.join(datadirpath, f'vocab_{foreign_lang[:2].lower()}.h5')
+    datapath = path.join(datadirpath, 'vocab_es.h5')
 
     # Load from .hdf-5:
     df = pd.read_hdf(datapath, 'df')
     
-    for idx in tqdm(df.index, desc=foreign_lang):
+    for idx in df.index:
         
         native = df.iloc[idx]['German'].replace("'", "\\'")
         foreign = df.iloc[idx][foreign_lang].replace("'", "\\'")

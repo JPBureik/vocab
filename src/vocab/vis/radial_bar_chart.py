@@ -144,4 +144,4 @@ def create_radial_chart(df, figsize, fontsize, color_theme = 'Purple'):
     plt.margins(0,0)
 #    plt.autoscale('enable')
     plt.show()
-    return plt
+    return fig

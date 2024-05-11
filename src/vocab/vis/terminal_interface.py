@@ -16,7 +16,7 @@ import pandas as pd
 from tabulate import tabulate
 from matplotlib import pyplot as plt
 
-from vocab.core.config import session_volume
+from vocab.core.config import session_volume, phase_intervals
 from vocab.vis import radial_bar_chart as rbc
 
 import matplotlib
@@ -51,6 +51,13 @@ class TerminalInterface(metaclass=Singleton):
             self._t.write(self.CURSOR_UP_ONE)
             self._t.write(self.ERASE_LINE)
             
+    def print_phase(self, phase):
+        chart_data = pd.DataFrame([[phase, len(phase_intervals) - 1]])
+        self.phase_plot = rbc.create_radial_chart(chart_data, figsize = (0.8,0.8), fontsize = 14, color_theme = 'Purple')
+        
+    def close_phase_plot(self):
+        plt.close(self.phase_plot)
+            
     @staticmethod
     def print_table(foreign_lang, table_df):
         table_list = []
@@ -66,14 +73,9 @@ class TerminalInterface(metaclass=Singleton):
         print(tabulate([table_list],headers=header_line,tablefmt='fancy_grid',numalign='center',stralign = 'center'))
             
     @staticmethod
-    def progress_bar(count):
+    def progress_bar(count, total):
         prog = '█' * count
-        prog += ' ' + str(count) + '/' + str(session_volume)
+        prog += ' ' + str(count) + '/' + str(total)
         print(' ' + prog)
-        
-    @staticmethod
-    def print_phase(idx, pract_df):
-        chart_data = pd.DataFrame([[pract_df.loc[idx]['Phase'],6]])
-        rbc.create_radial_chart(chart_data, figsize = (0.8,0.8), fontsize = 14, color_theme = 'Purple')
         
         
