@@ -86,9 +86,9 @@ class VocablApp():
         self.correct_counter += 1
         
         # Update UI:
-        self.ui.update_ui(self.table_df, idx, self.foreign_lang,
+        self.ui.update_ui(self.table_df, self.foreign_lang,
                           self.correct_counter, self.total,
-                          context='correct answer')
+                          context='correct answer', idx=idx)
         
     def _incorrect_answer(self, idx, answer):
 
@@ -96,9 +96,9 @@ class VocablApp():
         self._update_phase(idx, direction='decrease')
 
         # Update UI:
-        self.ui.update_ui(self.table_df, idx, self.foreign_lang,
+        self.ui.update_ui(self.table_df, self.foreign_lang,
                           self.correct_counter, self.total,
-                          context='initial incorrect answer',
+                          context='initial incorrect answer', idx=idx,
                           answer=answer)
         
         # Add to repeat DataFrame:
@@ -111,18 +111,18 @@ class VocablApp():
         while not self._correct_answer_condition(idx, answer):
             
             # Update UI:
-            self.ui.update_ui(self.table_df, idx, self.foreign_lang,
+            self.ui.update_ui(self.table_df, self.foreign_lang,
                               self.correct_counter, self.total,
-                              context='subsequent incorrect answer',
+                              context='subsequent incorrect answer', idx=idx,
                               answer=answer)
             
             # Get new answer:
             answer = input()
             
         # Update UI:
-        self.ui.update_ui(self.table_df, idx, self.foreign_lang,
+        self.ui.update_ui(self.table_df, self.foreign_lang,
                           self.correct_counter, self.total,
-                          context='corrected answer')
+                          context='corrected answer', idx=idx)
 
     
     # Check answer:

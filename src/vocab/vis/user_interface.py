@@ -21,8 +21,9 @@ class UserInterface():
         # Initialize terminal interface:
         self.ti = TerminalInterface()
         
-    def update_ui(self, table_df, idx, foreign_lang, correct_counter, total,
-                  context='correct answer', answer=None):
+    def update_ui(self, table_df, foreign_lang, correct_counter=None,
+                  total=None, context='correct answer', idx=None,
+                  answer=None):
         
         if context=='correct answer':
             # Close previous UI:
@@ -84,4 +85,12 @@ class UserInterface():
             
             # Update UI:
             self.ti.print_table(foreign_lang, table_df)
-            self.ti.progress_bar(correct_counter, total)            
+            self.ti.progress_bar(correct_counter, total)
+            
+        elif context=='added new vocable':
+            # Close previous UI:
+            self.ti.del_lines(13)
+            
+            # Update UI:
+            self.ti.print_table(foreign_lang, table_df)
+            self.ti.progress_bar(correct_counter, total)

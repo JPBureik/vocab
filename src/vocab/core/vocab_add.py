@@ -6,6 +6,7 @@ Created on Fri May 10 21:21:47 2024
 @author: jp
 """
 import requests
+import sys
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 import pandas as pd
@@ -204,7 +205,12 @@ def parse_text(vocab_fields):
     
     return new_df
 
-def print_new_vocab(new_df):
+def user_exit():
+    ui.ti.del_lines(1)
+    print('Bye!')
+    sys.exit(0)
+
+def user_input(new_df):
     
     # Package imports:
     
@@ -214,9 +220,17 @@ def print_new_vocab(new_df):
         
         voc = Vocable(foreign_lang, new_df['German'].loc[idx], new_df[f'{foreign_lang}'].loc[idx])
         print(voc)
-        cont_query = input('Continue?\n')
-        if cont_query=='':
-            ti.del_lines(7)
+        cont_query = input('Press <Enter> to add to library. Enter <mod> to edit. Enter <skip> to move on to next item.\n')
+        if cont_query=='quit':
+            user_exit()
+        elif cont_query=='skip':
+            ui.ti.del_lines(7)
+            continue
+        elif cont_query=='':
+            to_db(voc, phase=0, date=date.today())
+            table_df = load_from_db(foreign_lang)
+            ui.update_ui(table_df, foreign_lang, correct_counter=ctr,
+                          total=len(lang_bookmarks), context='added new vocable')
         else:
             break    
     
@@ -227,10 +241,10 @@ def extract_vocab(bookmark, ctr):
     
     # Print number of available0 items:
     ui.ti.progress_bar(ctr, len(lang_bookmarks))
-    
+
     new_df = parse_text(vocab_fields)
     
-    print_new_vocab(new_df)
+    user_input(new_df)
         
     ui.ti.del_lines(1)
     
