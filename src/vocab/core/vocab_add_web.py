@@ -284,6 +284,18 @@ def extract_vocab(bookmark, ctr):
         
     ui.ti.del_lines(1)
     
+def confirm_parse_bookmark(bookmark):
+    
+    action = input(f'Parse bookmark: {bookmark}? (y/n)\n')
+    
+    if action in ('', 'y'):
+        ui.ti.del_lines(2)
+        return True
+    
+    else:
+        ui.ti.del_lines(2)
+        return False
+    
 #%% Execution:
     
 if __name__ == '__main__':
@@ -292,12 +304,14 @@ if __name__ == '__main__':
     
     for ctr, bookmark in enumerate(lang_bookmarks):
         
-        extract_vocab(bookmark, ctr)
+        if confirm_parse_bookmark(bookmark):
         
-        action = input(f'Delete bookmark: {bookmark}?')
-        if action=='':
-            delete_bookmark(bookmark)
-        ui.ti.del_lines(1)
+            extract_vocab(bookmark, ctr)
+            
+            action = input(f'Delete bookmark: {bookmark}?')
+            if action=='':
+                delete_bookmark(bookmark)
+            ui.ti.del_lines(1)
     
     
     
