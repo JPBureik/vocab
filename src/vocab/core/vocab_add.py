@@ -59,6 +59,23 @@ def read_bookmarks(foreign_lang):
                         lang_bookmarks.append(b.split('"url": ')[1].strip('"'))
                         
     return lang_bookmarks
+
+def delete_bookmark(bookmark):
+    
+    # Read entire file:
+    with open('/Users/jp/Library/Application Support/Google/Chrome/Profile 6/Bookmarks', 'r') as f:
+        lines = f.readlines()
+    # Find line idx of bookmark to delete:
+    found_idxs = set()
+    for line_idx, l in enumerate(lines):
+        if bookmark in l:
+            found_idxs.add(line_idx)
+    idxs_to_del = range(min(found_idxs) - 7, min(found_idxs) + 4)
+    # Replace without lines to delete:
+    with open('/Users/jp/Library/Application Support/Google/Chrome/Profile 6/Bookmarks', 'w') as f:
+        for line_idx, line in enumerate(lines):
+            if line_idx not in idxs_to_del:
+                f.write(line)
     
 def fetch_site_contents(bookmark):
                     
@@ -202,6 +219,11 @@ def parse_text(vocab_fields):
                 new_df['German'].at[idx] += f' {ms}{f.split(ms)[1]}'
                 # Only once per item:
                 break
+            
+    # Strip blank space:
+    for idx in new_df.index:
+        for col in new_df.columns:
+            new_df[col].at[idx] = new_df[col].loc[idx].strip()
     
     return new_df
 
@@ -210,14 +232,14 @@ def user_exit():
     print('Bye!')
     sys.exit(0)
 
-def user_input(new_df):
-    
-    # Package imports:
-    
-    ti = TerminalInterface()
+def user_input(new_df, table_df):
+                    
+    def main_input_loop(idx, table_df):
         
-    for idx in new_df.index:
-        
+        # Check if exists:
+        if new_df[f'{foreign_lang}'].loc[idx] in table_df['Spanish'].values or new_df['German'].loc[idx] in table_df['German'].values:
+            return
+    
         voc = Vocable(foreign_lang, new_df['German'].loc[idx], new_df[f'{foreign_lang}'].loc[idx])
         print(voc)
         cont_query = input('Press <Enter> to add to library. Enter <mod> to edit. Enter <skip> to move on to next item.\n')
@@ -225,14 +247,28 @@ def user_input(new_df):
             user_exit()
         elif cont_query=='skip':
             ui.ti.del_lines(7)
-            continue
+            return
         elif cont_query=='':
             to_db(voc, phase=0, date=date.today())
             table_df = load_from_db(foreign_lang)
             ui.update_ui(table_df, foreign_lang, correct_counter=ctr,
                           total=len(lang_bookmarks), context='added new vocable')
+        elif cont_query=='mod':
+            ui.ti.del_lines(1)
+            select_field = input(f'Select field to edit: <1> = {foreign_lang}, <2> = German.\n')
+            if select_field=='1':
+                ui.ti.del_lines(1)
+                new_df[f'{foreign_lang}'].at[idx] = ui.editable_input(f'{new_df[f"{foreign_lang}"].loc[idx]}')
+            elif select_field=='2':
+                ui.ti.del_lines(1)
+                new_df['German'].at[idx] = ui.editable_input(f'{new_df["German"].loc[idx]}')
+            ui.ti.del_lines(8)
+            main_input_loop(idx, table_df)
         else:
-            break    
+            return
+    
+    for idx in new_df.index:
+        main_input_loop(idx, table_df)
     
     
 def extract_vocab(bookmark, ctr):
@@ -244,7 +280,7 @@ def extract_vocab(bookmark, ctr):
 
     new_df = parse_text(vocab_fields)
     
-    user_input(new_df)
+    user_input(new_df, table_df)
         
     ui.ti.del_lines(1)
     
@@ -257,7 +293,11 @@ if __name__ == '__main__':
     for ctr, bookmark in enumerate(lang_bookmarks):
         
         extract_vocab(bookmark, ctr)
-
+        
+        action = input(f'Delete bookmark: {bookmark}?')
+        if action=='':
+            delete_bookmark(bookmark)
+        ui.ti.del_lines(1)
     
     
     

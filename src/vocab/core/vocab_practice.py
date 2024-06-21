@@ -6,6 +6,7 @@ Created on Sun Apr 21 23:15:57 2024
 @author: jp
 """
 import time
+import sys
 import pandas as pd
 from datetime import date
 
@@ -54,11 +55,33 @@ class VocablApp():
             self.incorrect_df = pd.DataFrame(columns=self.pract_df.columns)
             for idx in self.pract_df.index:
                 self._practice_single(idx)
+        self.user_exit()
+                
+    def user_exit(self):
         # Save:
         self._save()
+        self.ui.ti.del_lines(1)
+        print('Bye!')
+        sys.exit(0)
         
     def _save(self):
         save_to_db(self.foreign_lang, self.table_df)
+        
+    def _mod_item(self, idx, context):
+        self.ui.ti.del_lines(1)
+        select_field = input(f'Select field to edit: <1> = {self.foreign_lang}, <2> = German.\n')
+        if select_field=='1':
+            self.ui.ti.del_lines(1)
+            self.pract_df[f"{self.foreign_lang}"].at[idx] = self.ui.editable_input(f'{self.pract_df[f"{self.foreign_lang}"].loc[idx]}')
+            self.table_df[f"{self.foreign_lang}"].at[idx] = self.pract_df[f"{self.foreign_lang}"].loc[idx]
+        elif select_field=='2':
+            self.ui.ti.del_lines(1)
+            self.pract_df["German"].at[idx] = self.ui.editable_input(f'{self.pract_df["German"].loc[idx]}')
+            self.table_df["German"].at[idx] = self.pract_df["German"].loc[idx]
+        # Update UI:
+        self.ui.update_ui(self.table_df, self.foreign_lang,
+                          self.correct_counter, self.total,
+                          context=context)
         
     def _correct_answer_condition(self, idx, answer):
         return answer == self.pract_df[self.foreign_lang].loc[idx]
@@ -107,30 +130,39 @@ class VocablApp():
         # Get new answer:
         answer = input()
         
-        # Try again as long as necessary:
-        while not self._correct_answer_condition(idx, answer):
-            
+        if answer=='mod':
+            self._mod_item(idx, context='practice mod after answer')
+        else:
+            # Try again as long as necessary:
+            while not self._correct_answer_condition(idx, answer):
+                
+                # Update UI:
+                self.ui.update_ui(self.table_df, self.foreign_lang,
+                                  self.correct_counter, self.total,
+                                  context='subsequent incorrect answer', idx=idx,
+                                  answer=answer)
+                
+                # Get new answer:
+                answer = input()
+                
             # Update UI:
             self.ui.update_ui(self.table_df, self.foreign_lang,
                               self.correct_counter, self.total,
-                              context='subsequent incorrect answer', idx=idx,
-                              answer=answer)
-            
-            # Get new answer:
-            answer = input()
-            
-        # Update UI:
-        self.ui.update_ui(self.table_df, self.foreign_lang,
-                          self.correct_counter, self.total,
-                          context='corrected answer', idx=idx)
+                              context='corrected answer', idx=idx)
 
     
     # Check answer:
     def _check_answer(self, idx, answer):
-        if self._correct_answer_condition(idx, answer):
-            self._correct_answer(idx)
+        if answer=='mod':
+            self._mod_item(idx, context='practice mod before answer')
+        elif answer=='quit':
+            self.user_exit()
         else:
-            self._incorrect_answer(idx, answer)
+            if self._correct_answer_condition(idx, answer):
+                self._correct_answer(idx)
+            
+            else:
+                self._incorrect_answer(idx, answer)
             
     def _practice_single(self, idx):
         # Display phase information of vocable:

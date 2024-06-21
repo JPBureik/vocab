@@ -8,7 +8,8 @@ Created on Fri May 10 15:49:36 2024
 
 import time
 from termcolor import colored
-
+import pyautogui
+from threading import Thread
 
 from vocab.vis.terminal_interface import TerminalInterface
 
@@ -94,3 +95,25 @@ class UserInterface():
             # Update UI:
             self.ti.print_table(foreign_lang, table_df)
             self.ti.progress_bar(correct_counter, total)
+            
+        elif context=='practice mod before answer':
+            # Close previous UI:
+            self.ti.del_lines(18)
+            
+            # Update UI:
+            self.ti.print_table(foreign_lang, table_df)
+            self.ti.progress_bar(correct_counter, total)
+            
+        elif context=='practice mod after answer':
+            # Close previous UI:
+            self.ti.del_lines(21)
+            
+            # Update UI:
+            self.ti.print_table(foreign_lang, table_df)
+            self.ti.progress_bar(correct_counter, total)            
+            
+    @staticmethod
+    def editable_input(text):
+        Thread(target=pyautogui.write, args=(text,)).start()
+        modified_input = input()
+        return modified_input
